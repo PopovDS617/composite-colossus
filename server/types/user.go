@@ -1,7 +1,7 @@
 package types
 
 type User struct {
-	ID        string `bson:"_id" json:"id,omitempty"` // or json:"_"
+	ID        string `bson:"_id,omitempty" json:"id,omitempty"` // or json:"_"
 	FirstName string `bson:"first_name" json:"first_name"`
 	LastName  string `bson:"last_name" json:"last_name"`
 }
