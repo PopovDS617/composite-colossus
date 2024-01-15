@@ -4,7 +4,6 @@ import (
 	"app/db"
 	"app/types"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
@@ -96,8 +95,6 @@ func (h *UserHandler) HandlePatchUser(ctx *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(updatedUserData)
 
 	err = h.userStore.UpdateUser(ctx.Context(), userID, updatedUserData)
 
