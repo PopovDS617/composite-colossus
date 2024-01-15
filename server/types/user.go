@@ -42,22 +42,22 @@ func NewUserFromParams(params CreateUserParams) (*User, error) {
 
 }
 
-func (params CreateUserParams) ValidateUser() []string {
+func (params CreateUserParams) ValidateUser() map[string]string {
 
-	errorsList := []string{}
+	errorsMap := map[string]string{}
 
 	if len(params.FirstName) < minFirstNameLen {
-		errorsList = append(errorsList, fmt.Sprintf("firstname length should be at least %d characters", minFirstNameLen))
+		errorsMap["first_name"] = fmt.Sprintf("length should be at least %d characters", minFirstNameLen)
 	}
 	if len(params.LastName) < minLastNameLen {
-		errorsList = append(errorsList, fmt.Sprintf("lastname length should be at least %d characters", minLastNameLen))
+		errorsMap["last_name"] = fmt.Sprintf("length should be at least %d characters", minLastNameLen)
 	}
 	if len(params.Password) < minPasswordLen {
-		errorsList = append(errorsList, fmt.Sprintf("password length should be at least %d characters", minPasswordLen))
+		errorsMap["password"] = fmt.Sprintf("length should be at least %d characters", minPasswordLen)
 	}
 	if !utils.IsEmailValid(params.Email) {
-		errorsList = append(errorsList, "email is invalid")
+		errorsMap["email"] = "is invalid"
 	}
 
-	return errorsList
+	return errorsMap
 }

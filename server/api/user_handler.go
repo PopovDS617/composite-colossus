@@ -3,8 +3,12 @@ package api
 import (
 	"app/db"
 	"app/types"
+	"errors"
+	"fmt"
+	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type UserHandler struct {
@@ -32,6 +36,11 @@ func (h *UserHandler) HandleGetUserByID(ctx *fiber.Ctx) error {
 	user, err := h.userStore.GetUserByID(ctx.Context(), id)
 
 	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			ctx.SendStatus(http.StatusNotFound)
+			return ctx.JSON(map[string]string{"message": "not found"})
+		}
+
 		return err
 	}
 
@@ -62,4 +71,39 @@ func (h *UserHandler) HandlePostUser(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.JSON(insertedUser)
+}
+
+func (h *UserHandler) HandleDeleteUser(ctx *fiber.Ctx) error {
+	userID := ctx.Params("id")
+
+	err := h.userStore.DeleteUser(ctx.Context(), userID)
+
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(map[string]string{"message": "deleted successfully"})
+}
+
+func (h *UserHandler) HandlePatchUser(ctx *fiber.Ctx) error {
+
+	userID := ctx.Params("id")
+
+	var updatedUserData *types.User
+
+	err := ctx.BodyParser(&updatedUserData)
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(updatedUserData)
+
+	err = h.userStore.UpdateUser(ctx.Context(), userID, updatedUserData)
+
+	if err != nil {
+		return err
+	}
+
+	return ctx.JSON(map[string]string{"message": "successfully updated"})
 }
