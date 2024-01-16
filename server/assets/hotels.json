@@ -1,0 +1,59 @@
+[
+  {
+    "name": "Tiger Hotel",
+    "location": "Bangkok"
+  },
+  {
+    "name": "Royal Hotel",
+    "location": "Singapore"
+  },
+  {
+    "name": "Gardens Hotel",
+    "location": "Kuala Lumpur"
+  },
+
+  {
+    "name": "Grand Hotel",
+    "location": "Tokyo"
+  },
+  {
+    "name": "Century Hotel",
+    "location": "Hong Kong"
+  },
+  {
+    "name": "Crown Hotel",
+    "location": "Seoul"
+  },
+  {
+    "name": "Palace Hotel",
+    "location": "New Delhi"
+  },
+  {
+    "name": "View Hotel",
+    "location": "Shanghai"
+  },
+  {
+    "name": "Gateway Hotel",
+    "location": "Sydney"
+  },
+  {
+    "name": "Pacific Hotel",
+    "location": "Melbourne"
+  },
+  {
+    "name": "Business Hotel",
+    "location": "Beijing"
+  },
+  {
+    "name": "Heritage Hotel",
+    "location": "Phuket"
+  },
+  {
+    "name": "Ocean View Hotel",
+    "location": "Sao Paulo"
+  },
+  {
+    "name": "Park Hotel",
+    "location": "Buenos Aires"
+  }
+]
