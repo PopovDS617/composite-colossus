@@ -4,6 +4,8 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 
 const DB_NAME = "hotel-reservation"
 
+const DB_URI = "mongodb://root:password@localhost:27017/?authSource=admin"
+
 func ToObjectID(s string) primitive.ObjectID {
 	objID, err := primitive.ObjectIDFromHex(s)
 

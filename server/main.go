@@ -13,8 +13,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const dburi = "mongodb://root:password@localhost:27017/?authSource=admin"
-
 var config = fiber.Config{
 
 	ErrorHandler: func(ctx *fiber.Ctx, err error) error {
@@ -29,14 +27,14 @@ func main() {
 	listenAddr := flag.String("listenAddr", ":5000", "The listen address of the API server")
 	flag.Parse()
 
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(dburi))
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DB_URI))
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// handlers
-	userHandler := api.NewUserHandler(db.NewMongoUserStore(client))
+	userHandler := api.NewUserHandler(db.NewMongoUserStore(client, db.DB_NAME))
 
 	app := fiber.New(config)
 
