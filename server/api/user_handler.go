@@ -88,7 +88,7 @@ func (h *UserHandler) HandlePatchUser(ctx *fiber.Ctx) error {
 
 	userID := ctx.Params("id")
 
-	var updatedUserData *types.User
+	var updatedUserData types.UpdateUserParams
 
 	err := ctx.BodyParser(&updatedUserData)
 
@@ -96,7 +96,7 @@ func (h *UserHandler) HandlePatchUser(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	err = h.userStore.UpdateUser(ctx.Context(), userID, updatedUserData)
+	err = h.userStore.UpdateUser(ctx.Context(), userID, &updatedUserData)
 
 	if err != nil {
 		return err

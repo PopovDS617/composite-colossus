@@ -14,8 +14,6 @@ import (
 )
 
 const dburi = "mongodb://root:password@localhost:27017/?authSource=admin"
-const dbname = "my_db"
-const userColl = "users"
 
 var config = fiber.Config{
 
