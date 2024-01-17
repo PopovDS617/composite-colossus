@@ -1,6 +1,10 @@
 package db
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"context"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
 
 const DB_NAME = "hotel-reservation"
 
@@ -14,4 +18,12 @@ func ToObjectID(s string) primitive.ObjectID {
 	}
 
 	return objID
+}
+
+type Dropper interface {
+	Drop(context.Context) error
+}
+
+type Store interface {
+	Dropper
 }
