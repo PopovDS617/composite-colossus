@@ -41,6 +41,8 @@ func (s *MongoRoomStore) InsertRoom(ctx context.Context, room *types.Room) (*typ
 
 	room.ID = res.InsertedID.(primitive.ObjectID)
 
+	// TODO: update hotel "rooms" field
+
 	return room, nil
 }
 
