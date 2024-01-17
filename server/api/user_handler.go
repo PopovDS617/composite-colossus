@@ -20,7 +20,7 @@ func NewUserHandler(userStore db.UserStore) *UserHandler {
 
 func (h *UserHandler) HandleGetUsers(ctx *fiber.Ctx) error {
 
-	users, err := h.userStore.GetUsers(ctx.Context())
+	users, err := h.userStore.GetAll(ctx.Context())
 
 	if err != nil {
 		return err
@@ -32,7 +32,7 @@ func (h *UserHandler) HandleGetUserByID(ctx *fiber.Ctx) error {
 
 	id := ctx.Params("id")
 
-	user, err := h.userStore.GetUserByID(ctx.Context(), id)
+	user, err := h.userStore.GetByID(ctx.Context(), id)
 
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
@@ -63,7 +63,7 @@ func (h *UserHandler) HandlePostUser(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	insertedUser, err := h.userStore.InsertUser(ctx.Context(), user)
+	insertedUser, err := h.userStore.Insert(ctx.Context(), user)
 
 	if err != nil {
 		return err
@@ -75,7 +75,7 @@ func (h *UserHandler) HandlePostUser(ctx *fiber.Ctx) error {
 func (h *UserHandler) HandleDeleteUser(ctx *fiber.Ctx) error {
 	userID := ctx.Params("id")
 
-	err := h.userStore.DeleteUser(ctx.Context(), userID)
+	err := h.userStore.Delete(ctx.Context(), userID)
 
 	if err != nil {
 		return err
@@ -96,7 +96,7 @@ func (h *UserHandler) HandlePatchUser(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	err = h.userStore.UpdateUser(ctx.Context(), userID, &updatedUserData)
+	err = h.userStore.Update(ctx.Context(), userID, &updatedUserData)
 
 	if err != nil {
 		return err

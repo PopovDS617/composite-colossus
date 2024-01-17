@@ -37,7 +37,7 @@ func (h *HotelHandler) HandlePostHotel(ctx *fiber.Ctx) error {
 		Location: "France",
 	}
 
-	insertedHotel, err := h.hotelStore.InsertHotel(ctx.Context(), &hotel)
+	insertedHotel, err := h.hotelStore.Insert(ctx.Context(), &hotel)
 
 	if err != nil {
 		return err

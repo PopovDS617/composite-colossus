@@ -13,8 +13,8 @@ const roomCollection = "rooms"
 
 type RoomStore interface {
 	Store
-	InsertRoom(context.Context, *types.Room) (*types.Room, error)
-	InsertMultipleRooms(context.Context, []types.Room) error
+	Insert(context.Context, *types.Room) (*types.Room, error)
+	InsertMultiple(context.Context, []types.Room) error
 }
 
 type MongoRoomStore struct {
@@ -31,7 +31,7 @@ func NewMongoRoomStore(client *mongo.Client, dbname string) *MongoRoomStore {
 	}
 }
 
-func (s *MongoRoomStore) InsertRoom(ctx context.Context, room *types.Room) (*types.Room, error) {
+func (s *MongoRoomStore) Insert(ctx context.Context, room *types.Room) (*types.Room, error) {
 
 	res, err := s.collection.InsertOne(ctx, room)
 
@@ -46,7 +46,7 @@ func (s *MongoRoomStore) InsertRoom(ctx context.Context, room *types.Room) (*typ
 	return room, nil
 }
 
-func (s *MongoRoomStore) InsertMultipleRooms(ctx context.Context, rooms []types.Room) error {
+func (s *MongoRoomStore) InsertMultiple(ctx context.Context, rooms []types.Room) error {
 
 	_, err := s.collection.InsertMany(ctx, utils.SliceToInterface[types.Room](rooms))
 

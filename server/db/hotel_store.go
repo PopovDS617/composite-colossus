@@ -5,6 +5,7 @@ import (
 	"app/utils"
 	"context"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -13,8 +14,11 @@ const hotelCollection = "hotels"
 
 type HotelStore interface {
 	Store
-	InsertHotel(context.Context, *types.Hotel) (*types.Hotel, error)
-	InsertMultipleHotels(context.Context, []types.Hotel) ([]interface{}, error)
+	Insert(context.Context, *types.Hotel) (*types.Hotel, error)
+	InsertMultiple(context.Context, []types.Hotel) ([]interface{}, error)
+	Update(context.Context, string, *types.UpdateHotelParams) error
+	GetById(context.Context, string) (*types.Hotel, error)
+	PushRoom(context.Context, string, string) error
 }
 
 type MongoHotelStore struct {
@@ -31,7 +35,7 @@ func NewMongoHotelStore(client *mongo.Client, dbname string) *MongoHotelStore {
 	}
 }
 
-func (s *MongoHotelStore) InsertHotel(ctx context.Context, hotel *types.Hotel) (*types.Hotel, error) {
+func (s *MongoHotelStore) Insert(ctx context.Context, hotel *types.Hotel) (*types.Hotel, error) {
 
 	res, err := s.collection.InsertOne(ctx, hotel)
 
@@ -44,7 +48,7 @@ func (s *MongoHotelStore) InsertHotel(ctx context.Context, hotel *types.Hotel) (
 	return hotel, nil
 }
 
-func (s *MongoHotelStore) InsertMultipleHotels(ctx context.Context, hotels []types.Hotel) ([]interface{}, error) {
+func (s *MongoHotelStore) InsertMultiple(ctx context.Context, hotels []types.Hotel) ([]interface{}, error) {
 
 	res, err := s.collection.InsertMany(ctx, utils.SliceToInterface[types.Hotel](hotels))
 
@@ -55,6 +59,73 @@ func (s *MongoHotelStore) InsertMultipleHotels(ctx context.Context, hotels []typ
 	return res.InsertedIDs, nil
 }
 
+func (s *MongoHotelStore) Update(ctx context.Context, id string, hotelData *types.UpdateHotelParams) error {
+
+	oid, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return err
+	}
+
+	filter := bson.M{"_id": oid}
+
+	updateData := bson.M{"$set": hotelData.ToBSON()}
+
+	_ = s.collection.FindOneAndUpdate(ctx, filter, updateData)
+
+	if err != nil {
+		return err
+	}
+
+	// if res.ModifiedCount == 0 {
+	// 	return errors.New("an error occured during update")
+	// }
+
+	return nil
+}
+
 func (s *MongoHotelStore) Drop(ctx context.Context) error {
 	return s.collection.Drop(ctx)
+}
+
+func (s *MongoHotelStore) GetById(ctx context.Context, id string) (*types.Hotel, error) {
+
+	oid, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var hotel types.Hotel
+
+	err = s.collection.FindOne(ctx, bson.M{"_id": oid}).Decode(&hotel)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &hotel, nil
+}
+
+func (s *MongoHotelStore) PushRoom(ctx context.Context, hotelID string, roomID string) error {
+
+	hotelOID, err := primitive.ObjectIDFromHex(hotelID)
+
+	if err != nil {
+		return err
+	}
+
+	roomOID, err := primitive.ObjectIDFromHex(roomID)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = s.collection.UpdateOne(ctx, bson.M{"_id": hotelOID}, bson.M{"$push": bson.M{"rooms": roomOID}})
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

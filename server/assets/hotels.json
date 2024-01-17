@@ -1,59 +1,73 @@
 [
   {
     "name": "Tiger Hotel",
-    "location": "Bangkok"
+    "location": "Bangkok",
+    "rooms": []
   },
   {
     "name": "Royal Hotel",
-    "location": "Singapore"
+    "location": "Singapore",
+    "rooms": []
   },
   {
     "name": "Gardens Hotel",
-    "location": "Kuala Lumpur"
+    "location": "Kuala Lumpur",
+    "rooms": []
   },
 
   {
     "name": "Grand Hotel",
-    "location": "Tokyo"
+    "location": "Tokyo",
+    "rooms": []
   },
   {
     "name": "Century Hotel",
-    "location": "Hong Kong"
+    "location": "Hong Kong",
+    "rooms": []
   },
   {
     "name": "Crown Hotel",
-    "location": "Seoul"
+    "location": "Seoul",
+    "rooms": []
   },
   {
     "name": "Palace Hotel",
-    "location": "New Delhi"
+    "location": "New Delhi",
+    "rooms": []
   },
   {
     "name": "View Hotel",
-    "location": "Shanghai"
+    "location": "Shanghai",
+    "rooms": []
   },
   {
     "name": "Gateway Hotel",
-    "location": "Sydney"
+    "location": "Sydney",
+    "rooms": []
   },
   {
     "name": "Pacific Hotel",
-    "location": "Melbourne"
+    "location": "Melbourne",
+    "rooms": []
   },
   {
     "name": "Business Hotel",
-    "location": "Beijing"
+    "location": "Beijing",
+    "rooms": []
   },
   {
     "name": "Heritage Hotel",
-    "location": "Phuket"
+    "location": "Phuket",
+    "rooms": []
   },
   {
     "name": "Ocean View Hotel",
-    "location": "Sao Paulo"
+    "location": "Sao Paulo",
+    "rooms": []
   },
   {
     "name": "Park Hotel",
-    "location": "Buenos Aires"
+    "location": "Buenos Aires",
+    "rooms": []
   }
 ]
