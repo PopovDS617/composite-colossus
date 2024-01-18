@@ -3,6 +3,7 @@ package main
 import (
 	"app/api"
 	"app/db"
+	"app/middleware"
 	"context"
 	"flag"
 
@@ -45,10 +46,11 @@ func main() {
 	// handlers
 	userHandler := api.NewUserHandler(store.User)
 	hotelHandler := api.NewHotelHandler(store)
+	authHandler := api.NewAuthHandler(store.User)
 
 	app := fiber.New(config)
 
-	// router
+	// ROUTER
 	apiV1 := app.Group("api/v1")
 
 	// users
@@ -58,11 +60,15 @@ func main() {
 	apiV1.Delete("/users/:id", userHandler.HandleDeleteUser)
 	apiV1.Patch("/users/:id", userHandler.HandlePatchUser)
 
+	// auth
+	apiV1.Post("/login", authHandler.HandleAuth)
+
 	// hotels
 	apiV1.Post("/hotels", hotelHandler.HandlePostHotel)
 	apiV1.Get("/hotels", hotelHandler.HandleGetHotels)
 	apiV1.Get("/hotels/:id", hotelHandler.HandleGetHotel)
-	apiV1.Get("/hotels/:id/rooms", hotelHandler.HandleGetRooms)
+	/* protected */
+	apiV1.Get("/hotels/:id/rooms", middleware.JWTAuthentication, hotelHandler.HandleGetRooms)
 
 	app.Listen(*listenAddr)
 
