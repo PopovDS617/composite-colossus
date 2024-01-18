@@ -13,12 +13,13 @@ import (
 const hotelCollection = "hotels"
 
 type HotelStore interface {
-	Store
 	Insert(context.Context, *types.Hotel) (*types.Hotel, error)
 	InsertMultiple(context.Context, []types.Hotel) ([]interface{}, error)
 	Update(context.Context, string, *types.UpdateHotelParams) error
-	GetById(context.Context, string) (*types.Hotel, error)
+	GetByID(context.Context, string) (*types.Hotel, error)
 	PushRoom(context.Context, string, string) error
+	GetAll(context.Context, string) ([]*types.Hotel, error)
+	Dropper
 }
 
 type MongoHotelStore struct {
@@ -77,10 +78,6 @@ func (s *MongoHotelStore) Update(ctx context.Context, id string, hotelData *type
 		return err
 	}
 
-	// if res.ModifiedCount == 0 {
-	// 	return errors.New("an error occured during update")
-	// }
-
 	return nil
 }
 
@@ -88,7 +85,7 @@ func (s *MongoHotelStore) Drop(ctx context.Context) error {
 	return s.collection.Drop(ctx)
 }
 
-func (s *MongoHotelStore) GetById(ctx context.Context, id string) (*types.Hotel, error) {
+func (s *MongoHotelStore) GetByID(ctx context.Context, id string) (*types.Hotel, error) {
 
 	oid, err := primitive.ObjectIDFromHex(id)
 
@@ -128,4 +125,22 @@ func (s *MongoHotelStore) PushRoom(ctx context.Context, hotelID string, roomID s
 	}
 
 	return nil
+}
+
+func (s *MongoHotelStore) GetAll(ctx context.Context, filter string) ([]*types.Hotel, error) {
+
+	res, err := s.collection.Find(ctx, bson.M{})
+
+	if err != nil {
+		return nil, err
+	}
+
+	var hotels []*types.Hotel
+
+	if err = res.All(ctx, &hotels); err != nil {
+		return nil, err
+	}
+
+	return hotels, err
+
 }

@@ -13,7 +13,7 @@ import (
 const userCollection = "users"
 
 type UserStore interface {
-	Store
+	Dropper
 	GetByID(context.Context, string) (*types.User, error)
 	GetAll(context.Context) ([]*types.User, error)
 	Insert(context.Context, *types.User) (*types.User, error)
