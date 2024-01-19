@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"sync"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,12 +19,17 @@ func main() {
 
 	var hotelsList []types.Hotel
 	var roomsList []types.Room
+	var usersList []types.CreateUserParams
 
-	hotelsCh := make(chan []types.Hotel, 1)
-	roomsCh := make(chan []types.Room, 1)
+	var wg sync.WaitGroup
 
-	go utils.ReadAndUnmarshal("/assets/hotels.json", hotelsList, hotelsCh)
-	go utils.ReadAndUnmarshal("/assets/rooms.json", roomsList, roomsCh)
+	wg.Add(3)
+
+	go utils.ReadAndUnmarshal("/assets/hotels.json", &hotelsList, &wg)
+	go utils.ReadAndUnmarshal("/assets/rooms.json", &roomsList, &wg)
+	go utils.ReadAndUnmarshal[types.CreateUserParams]("/assets/users.json", &usersList, &wg)
+
+	wg.Wait()
 
 	ctx := context.Background()
 
@@ -31,18 +37,6 @@ func main() {
 
 	if err != nil {
 		log.Fatal(err)
-	}
-
-	hotelsList, ok := <-hotelsCh
-
-	if !ok {
-		log.Fatal(ok)
-	}
-
-	roomsList, ok = <-roomsCh
-
-	if !ok {
-		log.Fatal(ok)
 	}
 
 	hotelStore := db.NewMongoHotelStore(client, db.DB_NAME)
@@ -53,6 +47,11 @@ func main() {
 
 	roomStore := db.NewMongoRoomStore(client, db.DB_NAME)
 	if err := roomStore.Drop(ctx); err != nil {
+		log.Fatal(err)
+	}
+
+	userStore := db.NewMongoUserStore(client, db.DB_NAME)
+	if err := userStore.Drop(ctx); err != nil {
 		log.Fatal(err)
 	}
 
@@ -97,6 +96,21 @@ func main() {
 			log.Fatal(err)
 		}
 
+	}
+
+	for _, v := range usersList {
+
+		user, err := types.NewUserFromParams(v)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		_, err = userStore.Insert(ctx, user)
+
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	fmt.Println("db seeding completed!")

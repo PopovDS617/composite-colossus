@@ -5,9 +5,13 @@ import (
 	"io"
 	"log"
 	"os"
+	"sync"
 )
 
-func ReadAndUnmarshal[T interface{}](filepath string, dataToBind []T, resChan chan []T) {
+func ReadAndUnmarshal[T interface{}](filepath string, dataToBind *[]T, wg *sync.WaitGroup) {
+
+	defer wg.Done()
+
 	dir, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
@@ -26,13 +30,9 @@ func ReadAndUnmarshal[T interface{}](filepath string, dataToBind []T, resChan ch
 		log.Fatalf("cannot read %v", err)
 	}
 
-	err = json.Unmarshal(content, &dataToBind)
+	err = json.Unmarshal(content, dataToBind)
 	if err != nil {
 		log.Fatalf("Error unmarshalling JSON: %v", err)
 	}
-
-	resChan <- dataToBind
-
-	close(resChan)
 
 }
