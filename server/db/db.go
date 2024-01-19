@@ -24,6 +24,8 @@ type Dropper interface {
 	Drop(context.Context) error
 }
 
-type Store interface {
-	Dropper
+type Store struct {
+	User  UserStore
+	Hotel HotelStore
+	Room  RoomStore
 }

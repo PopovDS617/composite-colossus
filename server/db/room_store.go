@@ -5,6 +5,7 @@ import (
 	"app/utils"
 	"context"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -12,9 +13,10 @@ import (
 const roomCollection = "rooms"
 
 type RoomStore interface {
-	Store
-	InsertRoom(context.Context, *types.Room) (*types.Room, error)
-	InsertMultipleRooms(context.Context, []types.Room) error
+	Dropper
+	Insert(context.Context, *types.Room) (*types.Room, error)
+	InsertMultiple(context.Context, []types.Room) error
+	GetRooms(context.Context, string) ([]*types.Room, error)
 }
 
 type MongoRoomStore struct {
@@ -31,7 +33,7 @@ func NewMongoRoomStore(client *mongo.Client, dbname string) *MongoRoomStore {
 	}
 }
 
-func (s *MongoRoomStore) InsertRoom(ctx context.Context, room *types.Room) (*types.Room, error) {
+func (s *MongoRoomStore) Insert(ctx context.Context, room *types.Room) (*types.Room, error) {
 
 	res, err := s.collection.InsertOne(ctx, room)
 
@@ -46,7 +48,7 @@ func (s *MongoRoomStore) InsertRoom(ctx context.Context, room *types.Room) (*typ
 	return room, nil
 }
 
-func (s *MongoRoomStore) InsertMultipleRooms(ctx context.Context, rooms []types.Room) error {
+func (s *MongoRoomStore) InsertMultiple(ctx context.Context, rooms []types.Room) error {
 
 	_, err := s.collection.InsertMany(ctx, utils.SliceToInterface[types.Room](rooms))
 
@@ -59,4 +61,27 @@ func (s *MongoRoomStore) InsertMultipleRooms(ctx context.Context, rooms []types.
 
 func (s *MongoRoomStore) Drop(ctx context.Context) error {
 	return s.collection.Drop(ctx)
+}
+
+func (s *MongoRoomStore) GetRooms(ctx context.Context, id string) ([]*types.Room, error) {
+
+	oid, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := s.collection.Find(ctx, bson.M{"hotel_id": oid})
+
+	if err != nil {
+		return nil, err
+	}
+
+	var rooms []*types.Room
+
+	if err = res.All(ctx, &rooms); err != nil {
+		return nil, err
+	}
+
+	return rooms, nil
 }

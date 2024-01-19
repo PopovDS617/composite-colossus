@@ -56,7 +56,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	insertedHotelsRaw, err := hotelStore.InsertMultipleHotels(ctx, hotelsList)
+	for _, v := range hotelsList {
+		v.Rooms = []primitive.ObjectID{}
+
+	}
+
+	insertedHotelsRaw, err := hotelStore.InsertMultiple(ctx, hotelsList)
 
 	if err != nil {
 		log.Fatal(err)
@@ -74,9 +79,20 @@ func main() {
 
 		randomIndex := rand.Intn(len(insertedHotels))
 
+		rawCurrHotelID := insertedHotels[randomIndex]
+
 		v.HotelID = insertedHotels[randomIndex]
 
-		_, err = roomStore.InsertRoom(ctx, &v)
+		_, err = roomStore.Insert(ctx, &v)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		currHotelID := rawCurrHotelID.Hex()
+		currRoomID := v.ID.Hex()
+
+		err = hotelStore.PushRoom(ctx, currHotelID, currRoomID)
+
 		if err != nil {
 			log.Fatal(err)
 		}
