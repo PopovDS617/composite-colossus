@@ -1,8 +1,8 @@
 package types
 
 import (
-	"app/utils"
 	"fmt"
+	"regexp"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -61,7 +61,7 @@ func (params CreateUserParams) ValidateUser() map[string]string {
 	if len(params.Password) < minPasswordLen {
 		errorsMap["password"] = fmt.Sprintf("length should be at least %d characters", minPasswordLen)
 	}
-	if !utils.IsEmailValid(params.Email) {
+	if !IsEmailValid(params.Email) {
 		errorsMap["email"] = "is invalid"
 	}
 
@@ -81,4 +81,9 @@ func (p UpdateUserParams) ToBSON() bson.M {
 	}
 
 	return m
+}
+
+func IsEmailValid(e string) bool {
+	emailRegex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+	return emailRegex.MatchString(e)
 }

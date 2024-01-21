@@ -3,6 +3,7 @@ package middleware
 import (
 	"app/utils"
 	"fmt"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -14,11 +15,25 @@ func JWTAuthentication(ctx *fiber.Ctx) error {
 		return fmt.Errorf("unauthorized")
 	}
 
-	if err := utils.ParseToken(token[0]); err != nil {
+	claims, err := utils.ValidateToken(token[0])
+	if err != nil {
 		return fmt.Errorf("unauthorized")
 	}
 
-	ctx.Next()
+	expires := claims["expires"].(float64)
 
-	return nil
+	tokenTime := int64(expires)
+
+	tokenTimeUNIX := time.Unix(tokenTime, 0)
+
+	if err != nil {
+		fmt.Println("could not parse time")
+		return fmt.Errorf("token expired")
+	}
+
+	if time.Now().Unix() > tokenTimeUNIX.Unix() {
+		return fmt.Errorf("token expired")
+	}
+
+	return ctx.Next()
 }
