@@ -2,12 +2,13 @@ package api
 
 import (
 	"app/db"
+	"app/types"
+	"app/utils"
 	"errors"
-	"fmt"
+	"net/http"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthHandler struct {
@@ -17,6 +18,20 @@ type AuthHandler struct {
 type AuthParams struct {
 	Email    string ` json:"email"`
 	Password string `json:"password"`
+}
+
+type AuthResponse struct {
+	User  *types.User `json:"user"`
+	Token string      `json:"token"`
+}
+
+type GenericResponse struct {
+	Type    string `json:"type"`
+	Message string `json:"message"`
+}
+
+func authErrorInvalidCred(ctx *fiber.Ctx) error {
+	return ctx.Status(http.StatusBadRequest).JSON(GenericResponse{Type: "error", Message: "invalid credentials"})
 }
 
 func NewAuthHandler(userStore db.UserStore) *AuthHandler {
@@ -37,17 +52,22 @@ func (h *AuthHandler) HandleAuth(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			return fmt.Errorf("invalid credentials")
+			return authErrorInvalidCred(ctx)
 		}
-		return err
+		return authErrorInvalidCred(ctx)
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(user.EncryptedPassword), []byte(authParams.Password))
-
-	if err != nil {
-		return fmt.Errorf("invalid credentials")
+	if !utils.IsPasswordValid(authParams.Password, user.EncryptedPassword) {
+		return authErrorInvalidCred(ctx)
 	}
 
-	return ctx.JSON(&user)
+	jwtToken := utils.CreateToken(user)
+
+	response := AuthResponse{
+		User:  user,
+		Token: jwtToken,
+	}
+
+	return ctx.JSON(response)
 
 }

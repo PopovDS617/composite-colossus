@@ -39,6 +39,13 @@ func (tdb *testdb) teardown(t *testing.T) {
 	}
 }
 
+var testUser = types.CreateUserParams{
+	Email:     "test@test.com",
+	FirstName: "Mark",
+	LastName:  "One",
+	Password:  "securepw",
+}
+
 func TestPostUser(t *testing.T) {
 	testDB := setupDB(t)
 	app := utils.SetupFiber()
@@ -49,14 +56,7 @@ func TestPostUser(t *testing.T) {
 
 	app.Post("/users", userHandler.HandlePostUser)
 
-	updUser := types.CreateUserParams{
-		Email:     "test@test.com",
-		FirstName: "Mike",
-		LastName:  "Elson",
-		Password:  "password123",
-	}
-
-	b, _ := json.Marshal(updUser)
+	b, _ := json.Marshal(testUser)
 
 	req := httptest.NewRequest("POST", "/users", bytes.NewReader(b))
 	req.Header.Add("Content-Type", "application/json")
@@ -74,13 +74,13 @@ func TestPostUser(t *testing.T) {
 		t.Errorf("password should not be in the response")
 	}
 
-	if resUser.FirstName != updUser.FirstName {
-		t.Errorf("expected firstname %s but received %s", updUser.FirstName, resUser.FirstName)
+	if resUser.FirstName != testUser.FirstName {
+		t.Errorf("expected firstname %s but received %s", testUser.FirstName, resUser.FirstName)
 	}
-	if resUser.LastName != updUser.LastName {
-		t.Errorf("expected firstname %s but received %s", updUser.LastName, resUser.LastName)
+	if resUser.LastName != testUser.LastName {
+		t.Errorf("expected firstname %s but received %s", testUser.LastName, resUser.LastName)
 	}
-	if resUser.Email != updUser.Email {
-		t.Errorf("expected firstname %s but received %s", updUser.Email, resUser.Email)
+	if resUser.Email != testUser.Email {
+		t.Errorf("expected firstname %s but received %s", testUser.Email, resUser.Email)
 	}
 }
