@@ -17,6 +17,7 @@ type RoomStore interface {
 	Insert(context.Context, *types.Room) (*types.Room, error)
 	InsertMultiple(context.Context, []types.Room) error
 	GetRooms(context.Context, string) ([]*types.Room, error)
+	GetById(context.Context, string) (*types.Room, error)
 }
 
 type MongoRoomStore struct {
@@ -84,4 +85,23 @@ func (s *MongoRoomStore) GetRooms(ctx context.Context, id string) ([]*types.Room
 	}
 
 	return rooms, nil
+}
+
+func (s *MongoRoomStore) GetById(ctx context.Context, id string) (*types.Room, error) {
+
+	oid, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var room types.Room
+
+	err = s.collection.FindOne(ctx, bson.M{"_id": oid}).Decode(&room)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &room, nil
 }
