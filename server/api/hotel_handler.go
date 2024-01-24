@@ -1,6 +1,7 @@
 package api
 
 import (
+	"app/api/custerr"
 	"app/db"
 
 	"github.com/gofiber/fiber/v2"
@@ -24,13 +25,13 @@ func (h *HotelHandler) HandleGetHotels(ctx *fiber.Ctx) error {
 	var qparams GetHotelQueryParams
 
 	if err := ctx.QueryParser(&qparams); err != nil {
-		return err
+		return custerr.BadRequest()
 	}
 
 	hotels, err := h.store.Hotel.GetAll(ctx.Context(), "")
 
 	if err != nil {
-		return err
+		return custerr.BadRequest()
 	}
 
 	return ctx.JSON(hotels)
@@ -43,7 +44,7 @@ func (h *HotelHandler) HandleGetRoomsByHotelID(ctx *fiber.Ctx) error {
 	rooms, err := h.store.Room.GetRooms(ctx.Context(), id)
 
 	if err != nil {
-		return err
+		return custerr.BadRequest()
 	}
 
 	return ctx.JSON(rooms)
@@ -56,7 +57,7 @@ func (h *HotelHandler) HandleGetHotel(ctx *fiber.Ctx) error {
 	hotel, err := h.store.Hotel.GetByID(ctx.Context(), id)
 
 	if err != nil {
-		return err
+		return custerr.InvalidID()
 	}
 
 	return ctx.JSON(hotel)

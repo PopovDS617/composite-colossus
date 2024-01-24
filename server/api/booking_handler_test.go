@@ -203,7 +203,7 @@ func TestUserGetBooking(t *testing.T) {
 	}
 
 	if res.StatusCode != http.StatusUnauthorized {
-		t.Fatalf("expected to get status code 200 but got %d", res.StatusCode)
+		t.Fatalf("expected to get status code 401 but got %d", res.StatusCode)
 	}
 
 }

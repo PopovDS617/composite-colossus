@@ -1,11 +1,11 @@
 package api
 
 import (
+	"app/api/custerr"
 	"app/db"
 	"app/types"
 	"app/utils"
 	"errors"
-	"net/http"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -25,15 +25,6 @@ type AuthResponse struct {
 	Token string      `json:"token"`
 }
 
-type GenericResponse struct {
-	Type    string `json:"type"`
-	Message string `json:"message"`
-}
-
-func authErrorInvalidCred(ctx *fiber.Ctx) error {
-	return ctx.Status(http.StatusBadRequest).JSON(GenericResponse{Type: "error", Message: "invalid credentials"})
-}
-
 func NewAuthHandler(userStore db.UserStore) *AuthHandler {
 
 	return &AuthHandler{
@@ -45,20 +36,20 @@ func (h *AuthHandler) HandleAuth(ctx *fiber.Ctx) error {
 	var authParams AuthParams
 
 	if err := ctx.BodyParser(&authParams); err != nil {
-		return err
+		return custerr.BadRequest()
 	}
 
 	user, err := h.userStore.GetByEmail(ctx.Context(), authParams.Email)
 
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			return authErrorInvalidCred(ctx)
+			return custerr.BadRequest()
 		}
-		return authErrorInvalidCred(ctx)
+		return custerr.BadRequest()
 	}
 
 	if !utils.IsPasswordValid(authParams.Password, user.EncryptedPassword) {
-		return authErrorInvalidCred(ctx)
+		return custerr.BadRequest()
 	}
 
 	jwtToken := utils.CreateToken(user)

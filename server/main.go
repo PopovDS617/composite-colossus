@@ -2,6 +2,7 @@ package main
 
 import (
 	"app/api"
+	"app/api/custerr"
 	"app/api/middleware"
 	"app/db"
 
@@ -16,12 +17,7 @@ import (
 )
 
 var config = fiber.Config{
-
-	ErrorHandler: func(ctx *fiber.Ctx, err error) error {
-
-		return ctx.JSON(map[string]string{"error": err.Error()})
-
-	},
+	ErrorHandler: custerr.ErrorHandler,
 }
 
 func main() {

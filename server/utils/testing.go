@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"app/api/custerr"
 	"encoding/json"
 	"net/http"
 
@@ -8,7 +9,12 @@ import (
 )
 
 func SetupFiber() *fiber.App {
-	app := fiber.New()
+
+	var config = fiber.Config{
+		ErrorHandler: custerr.ErrorHandler,
+	}
+
+	app := fiber.New(config)
 	return app
 }
 
