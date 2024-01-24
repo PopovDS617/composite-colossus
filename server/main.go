@@ -2,8 +2,9 @@ package main
 
 import (
 	"app/api"
+	"app/api/middleware"
 	"app/db"
-	"app/middleware"
+
 	"context"
 	"flag"
 
@@ -49,15 +50,15 @@ func main() {
 	hotelHandler := api.NewHotelHandler(store)
 	authHandler := api.NewAuthHandler(store.User)
 	roomHandler := api.NewRoomHandler(store)
+	bookingHandler := api.NewBookingHandler(store)
 
 	app := fiber.New(config)
 
 	// ROUTER
 	apiV1 := app.Group("api/v1")
 
+	// PUBLIC
 	// users
-	apiV1.Get("/users", userHandler.HandleGetUsers)
-	apiV1.Get("/users/:id", userHandler.HandleGetUserByID)
 	apiV1.Post("/users/", userHandler.HandlePostUser)
 	apiV1.Delete("/users/:id", userHandler.HandleDeleteUser)
 	apiV1.Patch("/users/:id", userHandler.HandlePatchUser)
@@ -69,8 +70,24 @@ func main() {
 	apiV1.Get("/hotels", hotelHandler.HandleGetHotels)
 	apiV1.Get("/hotels/:id", hotelHandler.HandleGetHotel)
 	/* protected */
-	apiV1.Get("/hotels/:id/rooms", middleware.JWTAuthentication, hotelHandler.HandleGetRooms)
-	apiV1.Post("/rooms/:id/booking", middleware.JWTAuthentication, roomHandler.HandlePostRoomBooking)
+	apiV1.Get("/hotels/:id/rooms", middleware.JWTAuthentication(store.User), hotelHandler.HandleGetRoomsByHotelID)
+
+	// rooms
+	apiV1.Get("/rooms/", roomHandler.HandleGetAllRooms)
+	/* protected */
+	apiV1.Post("/rooms/:id/booking", middleware.JWTAuthentication(store.User), roomHandler.HandlePostRoomBooking)
+
+	// booking
+	/* protected */
+	apiV1.Get("/booking/:id", middleware.JWTAuthentication(store.User), bookingHandler.HandleGetBooking)
+	apiV1.Post("/booking/:id", middleware.JWTAuthentication(store.User), bookingHandler.HandleCancelRoomBooking)
+
+	// PRIVATE
+	// users
+	apiV1.Get("/users", middleware.JWTAuthentication(store.User), middleware.AdminAuth, userHandler.HandleGetUsers)
+	apiV1.Get("/users/:id", userHandler.HandleGetUserByID)
+	// booking
+	apiV1.Get("/booking", middleware.JWTAuthentication(store.User), middleware.AdminAuth, bookingHandler.HandleGetBookings)
 
 	app.Listen(*listenAddr)
 

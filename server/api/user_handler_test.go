@@ -1,49 +1,19 @@
 package api
 
 import (
-	"app/db"
 	"app/types"
 	"app/utils"
 	"bytes"
-	"context"
 	"encoding/json"
-	"log"
 	"net/http/httptest"
 	"testing"
-
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type testdb struct {
-	db.UserStore
-}
-
-const testdburi = "mongodb://root:password@localhost:27017/?authSource=admin"
-
-func setupDB(t *testing.T) *testdb {
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(testdburi))
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return &testdb{
-		UserStore: db.NewMongoUserStore(client, "test"),
-	}
-}
-
-func (tdb *testdb) teardown(t *testing.T) {
-	if err := tdb.UserStore.Drop(context.TODO()); err != nil {
-		t.Fatal(err)
-	}
-}
-
-var testUser = types.CreateUserParams{
-	Email:     "test@test.com",
+var userHandlerTestUser = types.CreateUserParams{
 	FirstName: "Mark",
 	LastName:  "One",
-	Password:  "securepw",
+	Email:     "Mark@mail.com",
+	Password:  "Mark_One",
 }
 
 func TestPostUser(t *testing.T) {
@@ -52,11 +22,11 @@ func TestPostUser(t *testing.T) {
 
 	defer testDB.teardown(t)
 
-	userHandler := NewUserHandler(testDB.UserStore)
+	userHandler := NewUserHandler(testDB.User)
 
 	app.Post("/users", userHandler.HandlePostUser)
 
-	b, _ := json.Marshal(testUser)
+	b, _ := json.Marshal(userHandlerTestUser)
 
 	req := httptest.NewRequest("POST", "/users", bytes.NewReader(b))
 	req.Header.Add("Content-Type", "application/json")
@@ -74,13 +44,13 @@ func TestPostUser(t *testing.T) {
 		t.Errorf("password should not be in the response")
 	}
 
-	if resUser.FirstName != testUser.FirstName {
-		t.Errorf("expected firstname %s but received %s", testUser.FirstName, resUser.FirstName)
+	if resUser.FirstName != userHandlerTestUser.FirstName {
+		t.Errorf("expected firstname %s but received %s", userHandlerTestUser.FirstName, resUser.FirstName)
 	}
-	if resUser.LastName != testUser.LastName {
-		t.Errorf("expected firstname %s but received %s", testUser.LastName, resUser.LastName)
+	if resUser.LastName != userHandlerTestUser.LastName {
+		t.Errorf("expected firstname %s but received %s", userHandlerTestUser.LastName, resUser.LastName)
 	}
-	if resUser.Email != testUser.Email {
-		t.Errorf("expected firstname %s but received %s", testUser.Email, resUser.Email)
+	if resUser.Email != userHandlerTestUser.Email {
+		t.Errorf("expected firstname %s but received %s", userHandlerTestUser.Email, resUser.Email)
 	}
 }

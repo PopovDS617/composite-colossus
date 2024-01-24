@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -74,4 +75,15 @@ func CreateToken(user *types.User) string {
 
 	return tokenStr
 
+}
+
+func GetUserFromContext(ctx *fiber.Ctx) (*types.User, error) {
+
+	user, ok := ctx.Context().UserValue("user").(*types.User)
+
+	if !ok {
+		return nil, fmt.Errorf("unauthorized")
+	}
+
+	return user, nil
 }

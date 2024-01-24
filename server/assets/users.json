@@ -3,30 +3,42 @@
     "first_name": "Arthur",
     "last_name": "Morgan",
     "email": "test@mail1.com",
-    "password": "123123"
+    "password": "123123",
+    "is_admin": false
   },
   {
     "first_name": "John",
     "last_name": "Marston",
     "email": "test@mail2.com",
-    "password": "123123"
+    "password": "123123",
+    "is_admin": false
   },
   {
     "first_name": "Dutch",
     "last_name": "van der Linde",
     "email": "test@mail3.com",
-    "password": "123123"
+    "password": "123123",
+    "is_admin": false
   },
   {
     "first_name": "Hosea",
     "last_name": "Matthews",
     "email": "test@mail4.com",
-    "password": "123123"
+    "password": "123123",
+    "is_admin": false
   },
   {
     "first_name": "Javier",
     "last_name": "Escuella",
     "email": "test@mail5.com",
-    "password": "123123"
+    "password": "123123",
+    "is_admin": false
+  },
+  {
+    "first_name": "admin",
+    "last_name": "admin",
+    "email": "admin@mail.com",
+    "password": "adminadmin",
+    "is_admin": true
   }
 ]
