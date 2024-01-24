@@ -1,8 +1,8 @@
 package middleware
 
 import (
+	"app/api/custerr"
 	"app/utils"
-	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -12,11 +12,11 @@ func AdminAuth(ctx *fiber.Ctx) error {
 	user, err := utils.GetUserFromContext(ctx)
 
 	if err != nil {
-		return err
+		return custerr.Unauthorized()
 	}
 
 	if !user.IsAdmin {
-		return fmt.Errorf("not authorized")
+		return custerr.Unauthorized()
 	}
 
 	return ctx.Next()

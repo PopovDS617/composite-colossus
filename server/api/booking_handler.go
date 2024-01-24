@@ -1,6 +1,7 @@
 package api
 
 import (
+	"app/api/custerr"
 	"app/db"
 	"app/utils"
 	"net/http"
@@ -22,7 +23,7 @@ func (h *BookingHandler) HandleGetBookings(ctx *fiber.Ctx) error {
 	bookings, err := h.store.Booking.GetBookings(ctx.Context(), bson.M{})
 
 	if err != nil {
-		return err
+		return custerr.BadRequest()
 	}
 
 	return ctx.JSON(bookings)
@@ -35,17 +36,17 @@ func (h *BookingHandler) HandleGetBooking(ctx *fiber.Ctx) error {
 	booking, err := h.store.Booking.GetBookingByID(ctx.Context(), bookingID)
 
 	if err != nil {
-		return err
+		return custerr.BadRequest()
 	}
 
 	user, err := utils.GetUserFromContext(ctx)
 
 	if err != nil {
-		return err
+		return custerr.BadRequest()
 	}
 
 	if booking.UserID != user.ID && !user.IsAdmin {
-		return ctx.Status(http.StatusUnauthorized).JSON(GenericResponse{Type: "error", Message: "not authorized"})
+		return custerr.Unauthorized()
 	}
 
 	return ctx.JSON(booking)
@@ -69,7 +70,7 @@ func (h *BookingHandler) HandleCancelRoomBooking(ctx *fiber.Ctx) error {
 	}
 
 	if booking.UserID != user.ID && !user.IsAdmin {
-		return ctx.Status(http.StatusUnauthorized).JSON(GenericResponse{Type: "error", Message: "not authorized"})
+		return custerr.Unauthorized()
 	}
 
 	booking.Cancelled = true
@@ -78,5 +79,5 @@ func (h *BookingHandler) HandleCancelRoomBooking(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return ctx.Status(http.StatusOK).JSON(GenericResponse{Type: "msg", Message: "success"})
+	return ctx.SendStatus(http.StatusOK)
 }

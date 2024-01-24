@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"app/api/custerr"
 	"app/db"
 	"app/utils"
 	"fmt"
@@ -15,12 +16,12 @@ func JWTAuthentication(s db.UserStore) fiber.Handler {
 		token := ctx.GetReqHeaders()["X-Api-Token"]
 
 		if len(token) == 0 {
-			return fmt.Errorf("unauthorized")
+			return custerr.Unauthorized()
 		}
 
 		claims, err := utils.ValidateToken(token[0])
 		if err != nil {
-			return fmt.Errorf("unauthorized")
+			return custerr.Unauthorized()
 		}
 
 		expires := claims["expires"].(float64)
@@ -31,11 +32,11 @@ func JWTAuthentication(s db.UserStore) fiber.Handler {
 
 		if err != nil {
 			fmt.Println("could not parse time")
-			return fmt.Errorf("token expired")
+			return custerr.TokenExpired()
 		}
 
 		if time.Now().Unix() > tokenTimeUNIX.Unix() {
-			return fmt.Errorf("token expired")
+			return custerr.TokenExpired()
 		}
 
 		userID := claims["user_id"].(string)

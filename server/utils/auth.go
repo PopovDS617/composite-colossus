@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"app/api/custerr"
 	"app/types"
 	"fmt"
 	"log"
@@ -16,7 +17,7 @@ func ValidateToken(inputToken string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(inputToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			fmt.Println("invalid signing method")
-			return nil, fmt.Errorf("unauthorized")
+			return nil, custerr.Unauthorized()
 		}
 
 		// secret := os.Getenv("JWT_SECRET")
@@ -26,18 +27,19 @@ func ValidateToken(inputToken string) (jwt.MapClaims, error) {
 
 		return []byte(secret), nil
 	})
+
 	if err != nil {
-		return nil, fmt.Errorf("unathorized")
+		return nil, custerr.Unauthorized()
 	}
 
 	if !token.Valid {
 		fmt.Println("invalid token")
-		return nil, fmt.Errorf("unathorized")
+		return nil, custerr.Unauthorized()
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return nil, fmt.Errorf("unathorized")
+		return nil, custerr.Unauthorized()
 	}
 
 	return claims, nil
@@ -82,7 +84,7 @@ func GetUserFromContext(ctx *fiber.Ctx) (*types.User, error) {
 	user, ok := ctx.Context().UserValue("user").(*types.User)
 
 	if !ok {
-		return nil, fmt.Errorf("unauthorized")
+		return nil, custerr.Unauthorized()
 	}
 
 	return user, nil

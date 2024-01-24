@@ -1,6 +1,7 @@
 package api
 
 import (
+	"app/api/custerr"
 	"app/db"
 	"app/types"
 	"app/utils"
@@ -57,28 +58,28 @@ func (h *RoomHandler) HandlePostRoomBooking(ctx *fiber.Ctx) error {
 	user, err := utils.GetUserFromContext(ctx)
 
 	if err != nil {
-		return err
+		return custerr.BadRequest()
 	}
 
 	var roomBookingParams RoomBookingParams
 
 	if err := ctx.BodyParser(&roomBookingParams); err != nil {
-		return err
+		return custerr.BadRequest()
 	}
 
 	if err := roomBookingParams.validate(); err != nil {
-		return err
+		return custerr.BadRequest()
 	}
 
 	user, err = h.store.User.GetByID(ctx.Context(), user.ID.Hex())
 
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
-			ctx.SendStatus(http.StatusNotFound)
-			return ctx.JSON(map[string]string{"message": "not found"})
+
+			return custerr.NotFound()
 		}
 
-		return err
+		return custerr.BadRequest()
 	}
 
 	room, err := h.store.Room.GetById(ctx.Context(), roomID)
@@ -86,23 +87,22 @@ func (h *RoomHandler) HandlePostRoomBooking(ctx *fiber.Ctx) error {
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			ctx.SendStatus(http.StatusNotFound)
-			return ctx.JSON(map[string]string{"message": "not found"})
+			return custerr.NotFound()
 		}
 
-		return err
+		return custerr.BadRequest()
 	}
 
 	ok, err := h.isRoomAvailable(ctx.Context(), roomID, &roomBookingParams)
 
 	if err != nil {
-		return err
+		return custerr.BadRequest()
 	}
 
 	if !ok {
-		return ctx.Status(http.StatusBadRequest).JSON(GenericResponse{
-			Type:    "error",
-			Message: fmt.Sprintf("room %s is alreade booked", roomID),
-		})
+		err := custerr.NewError(http.StatusBadRequest, fmt.Sprintf("room %s is alreade booked", roomID))
+
+		return ctx.Status(err.Code).JSON(err)
 	}
 
 	booking := types.Booking{
@@ -127,7 +127,7 @@ func (h *RoomHandler) isRoomAvailable(ctx context.Context, roomID string, roomBo
 	roomOID, err := primitive.ObjectIDFromHex(roomID)
 
 	if err != nil {
-		return false, err
+		return false, custerr.BadRequest()
 	}
 
 	filter := bson.M{
@@ -143,7 +143,7 @@ func (h *RoomHandler) isRoomAvailable(ctx context.Context, roomID string, roomBo
 	bookings, err := h.store.Booking.GetBookings(ctx, filter)
 
 	if err != nil {
-		return false, err
+		return false, custerr.BadRequest()
 	}
 
 	ok := len(bookings) == 0
@@ -155,7 +155,7 @@ func (h *RoomHandler) HandleGetAllRooms(ctx *fiber.Ctx) error {
 	rooms, err := h.store.Room.GetRooms(ctx.Context(), "")
 
 	if err != nil {
-		return err
+		return custerr.BadRequest()
 	}
 
 	return ctx.JSON(rooms)

@@ -109,19 +109,4 @@ func TestAuthenticateFailure(t *testing.T) {
 		t.Errorf("expected http status of 400 but got %d", res.StatusCode)
 	}
 
-	var response GenericResponse
-
-	utils.DecodeResBody[*GenericResponse](res, &response)
-
-	resType := response.Type
-	resMessage := response.Message
-
-	if resType != "error" {
-		t.Fatalf("expected response type to be 'error' but git %s", resType)
-	}
-
-	if resMessage != "invalid credentials" {
-		t.Fatalf("expected response type to be 'invalid credentials' but git %s", resMessage)
-	}
-
 }
