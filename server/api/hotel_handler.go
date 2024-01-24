@@ -37,7 +37,7 @@ func (h *HotelHandler) HandleGetHotels(ctx *fiber.Ctx) error {
 
 }
 
-func (h *HotelHandler) HandleGetRooms(ctx *fiber.Ctx) error {
+func (h *HotelHandler) HandleGetRoomsByHotelID(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
 	rooms, err := h.store.Room.GetRooms(ctx.Context(), id)

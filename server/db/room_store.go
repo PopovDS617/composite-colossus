@@ -66,13 +66,20 @@ func (s *MongoRoomStore) Drop(ctx context.Context) error {
 
 func (s *MongoRoomStore) GetRooms(ctx context.Context, id string) ([]*types.Room, error) {
 
-	oid, err := primitive.ObjectIDFromHex(id)
+	var filter interface{}
 
-	if err != nil {
-		return nil, err
+	if len(id) > 0 {
+
+		oid, err := primitive.ObjectIDFromHex(id)
+
+		if err != nil {
+			return nil, err
+		}
+		filter = bson.M{"hotel_id": oid}
+	} else {
+		filter = bson.M{}
 	}
-
-	res, err := s.collection.Find(ctx, bson.M{"hotel_id": oid})
+	res, err := s.collection.Find(ctx, filter)
 
 	if err != nil {
 		return nil, err
