@@ -1,87 +1,218 @@
 [
   {
-    "name": "Tiger Hotel",
-    "location": "Bangkok",
-    "rooms": [],
-    "rating": 1
-  },
-  {
-    "name": "Royal Hotel",
-    "location": "Singapore",
-    "rooms": [],
-    "rating": 2
-  },
-  {
-    "name": "Gardens Hotel",
-    "location": "Kuala Lumpur",
-    "rooms": [],
-    "rating": 3
-  },
-
-  {
-    "name": "Grand Hotel",
-    "location": "Tokyo",
+    "name": "Eldritch Enclave",
+    "location": "Mystic Meadows",
     "rooms": [],
     "rating": 4
   },
   {
-    "name": "Century Hotel",
-    "location": "Hong Kong",
+    "name": "Dragon's Roost Retreat",
+    "location": "Firepeak Mountains",
+    "rooms": [],
+    "rating": 4
+  },
+  {
+    "name": "Sylvan Serenity Inn",
+    "location": "Whispering Woods",
+    "rooms": [],
+    "rating": 4
+  },
+  {
+    "name": "Shadowvale Sanctuary",
+    "location": "Darkling Dale",
+    "rooms": [],
+    "rating": 4
+  },
+  {
+    "name": "Celestial Summit Lodge",
+    "location": "Aetherial Peaks",
+    "rooms": [],
+    "rating": 4
+  },
+  {
+    "name": "Moonlit Mirage Manor",
+    "location": "Lunar Glades",
+    "rooms": [],
+    "rating": 4
+  },
+  {
+    "name": "Dwarven Forgeview Retreat",
+    "location": "Stoneheart Mountains",
+    "rooms": [],
+    "rating": 4
+  },
+  {
+    "name": "Gnome's Gears & Gadgets Inn",
+    "location": "Clockwork Canyon",
+    "rooms": [],
+    "rating": 4
+  },
+  {
+    "name": "Crystal Expanse Retreat",
+    "location": "Crystal Vale",
+    "rooms": [],
+    "rating": 4
+  },
+  {
+    "name": "Feywood Fables Hotel",
+    "location": "Enchanted Forest",
+    "rooms": [],
+    "rating": 4
+  },
+  {
+    "name": "Desert Mirage Oasis",
+    "location": "Sands of Mirage",
+    "rooms": [],
+    "rating": 4
+  },
+  {
+    "name": "Jungle Haven Hideaway",
+    "location": "Verdant Jungle",
+    "rooms": [],
+    "rating": 4
+  },
+  {
+    "name": "Feathered Oasis Retreat",
+    "location": "Featherfall Foothills",
+    "rooms": [],
+    "rating": 4
+  },
+  {
+    "name": "Moonshadow Lodge",
+    "location": "Shadowed Vale",
+    "rooms": [],
+    "rating": 4
+  },
+  {
+    "name": "Azure Dream Villa",
+    "location": "Azure Waters",
+    "rooms": [],
+    "rating": 4
+  },
+  {
+    "name": "Winter's Embrace Hotel",
+    "location": "Frostbite Peaks",
+    "rooms": [],
+    "rating": 4
+  },
+  {
+    "name": "Sandstorm Mirage Oasis",
+    "location": "Dunes of Whispers",
+    "rooms": [],
+    "rating": 4
+  },
+  {
+    "name": "Nomad's Haven",
+    "location": "Nagrand Oasis",
+    "rooms": [],
+    "rating": 4
+  },
+  {
+    "name": "Fortress Retreat",
+    "location": "Bladespire Mountains",
+    "rooms": [],
+    "rating": 3
+  },
+  {
+    "name": "Gorgrond Greenscape",
+    "location": "Verdant Gorgrond",
+    "rooms": [],
+    "rating": 2
+  },
+  {
+    "name": "Talador Towering Hotel",
+    "location": "Talador Heights",
+    "rooms": [],
+    "rating": 1
+  },
+  {
+    "name": "Spires of Arak Skyline Inn",
+    "location": "Skyward Arak",
     "rooms": [],
     "rating": 5
   },
   {
-    "name": "Crown Hotel",
-    "location": "Seoul",
-    "rooms": [],
-    "rating": 1
-  },
-  {
-    "name": "Palace Hotel",
-    "location": "New Delhi",
-    "rooms": [],
-    "rating": 2
-  },
-  {
-    "name": "View Hotel",
-    "location": "Shanghai",
-    "rooms": [],
-    "rating": 3
-  },
-  {
-    "name": "Gateway Hotel",
-    "location": "Sydney",
+    "name": "Highmountain Highland Lodge",
+    "location": "Highland Peaks",
     "rooms": [],
     "rating": 4
   },
   {
-    "name": "Pacific Hotel",
-    "location": "Melbourne",
+    "name": "Verdant Villa Retreat",
+    "location": "Verdant Valleys",
+    "rooms": [],
+    "rating": 3
+  },
+  {
+    "name": "Starlit Haven Hotel",
+    "location": "Starfall Shores",
+    "rooms": [],
+    "rating": 2
+  },
+  {
+    "name": "Summit Retreat",
+    "location": "Snowcapped Summit",
+    "rooms": [],
+    "rating": 1
+  },
+  {
+    "name": "Azure Breeze Inn",
+    "location": "Azure Winds",
     "rooms": [],
     "rating": 5
   },
   {
-    "name": "Business Hotel",
-    "location": "Beijing",
+    "name": "Highlord's Sanctum Hotel",
+    "location": "Sanctuary Heights",
     "rooms": [],
-    "rating": 1
+    "rating": 4
   },
   {
-    "name": "Heritage Hotel",
-    "location": "Phuket",
-    "rooms": [],
-    "rating": 2
-  },
-  {
-    "name": "Ocean View Hotel",
-    "location": "Sao Paulo",
+    "name": "Astral Retreat",
+    "location": "Celestial Plains",
     "rooms": [],
     "rating": 3
   },
   {
-    "name": "Park Hotel",
-    "location": "Buenos Aires",
+    "name": "Zephyr Zenith Resort",
+    "location": "Zephyr Isles",
+    "rooms": [],
+    "rating": 2
+  },
+  {
+    "name": "Coastal Haven",
+    "location": "Coast of Dreams",
+    "rooms": [],
+    "rating": 1
+  },
+  {
+    "name": "Nautical Nook",
+    "location": "Nautical Haven",
+    "rooms": [],
+    "rating": 5
+  },
+  {
+    "name": "Eternal Inn",
+    "location": "Eternal Lands",
     "rooms": [],
     "rating": 4
+  },
+  {
+    "name": "Ethereal Retreat",
+    "location": "Ethereal Expanse",
+    "rooms": [],
+    "rating": 3
+  },
+  {
+    "name": "Red Velvet Inn",
+    "location": "Crimson Meadows",
+    "rooms": [],
+    "rating": 2
+  },
+  {
+    "name": "Arboreal Oasis",
+    "location": "Verdant Arden",
+    "rooms": [],
+    "rating": 1
   }
 ]

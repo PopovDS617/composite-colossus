@@ -1,6 +1,7 @@
 package db
 
 import (
+	"app/api/custerr"
 	"app/types"
 	"context"
 
@@ -17,6 +18,7 @@ type BookingStore interface {
 	GetBookings(context.Context, bson.M) ([]*types.Booking, error)
 	GetBookingByID(context.Context, string) (*types.Booking, error)
 	UpdateBooking(context.Context, string, *types.Booking) error
+	IsRoomAvailable(context.Context, string, string, string) (bool, error)
 }
 
 type MongoBookingStore struct {
@@ -107,4 +109,32 @@ func (s *MongoBookingStore) UpdateBooking(ctx context.Context, bookingID string,
 	}
 
 	return nil
+}
+
+func (h *MongoBookingStore) IsRoomAvailable(ctx context.Context, roomID string, dateFrom, dateTill string) (bool, error) {
+
+	roomOID, err := primitive.ObjectIDFromHex(roomID)
+
+	if err != nil {
+		return false, custerr.BadRequest()
+	}
+
+	filter := bson.M{
+		"room_id": roomOID,
+		"date_from": bson.M{
+			"$gte": dateFrom,
+		},
+		"date_till": bson.M{
+			"$lte": dateTill,
+		},
+	}
+
+	bookings, err := h.GetBookings(ctx, filter)
+
+	if err != nil {
+		return false, custerr.BadRequest()
+	}
+
+	ok := len(bookings) == 0
+	return ok, nil
 }

@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const hotelCollection = "hotels"
@@ -18,7 +19,7 @@ type HotelStore interface {
 	Update(context.Context, string, *types.UpdateHotelParams) error
 	GetByID(context.Context, string) (*types.Hotel, error)
 	PushRoom(context.Context, string, string) error
-	GetAll(context.Context, string) ([]*types.Hotel, error)
+	GetAll(context.Context, Map, *Pagination) ([]*types.Hotel, error)
 	Dropper
 }
 
@@ -127,9 +128,13 @@ func (s *MongoHotelStore) PushRoom(ctx context.Context, hotelID string, roomID s
 	return nil
 }
 
-func (s *MongoHotelStore) GetAll(ctx context.Context, filter string) ([]*types.Hotel, error) {
+func (s *MongoHotelStore) GetAll(ctx context.Context, filter Map, pagination *Pagination) ([]*types.Hotel, error) {
+	opts := options.FindOptions{}
 
-	res, err := s.collection.Find(ctx, bson.M{})
+	opts.SetSkip(int64((pagination.Page - 1) * pagination.BatchSize))
+	opts.SetLimit(int64(pagination.BatchSize))
+
+	res, err := s.collection.Find(ctx, filter, &opts)
 
 	if err != nil {
 		return nil, err

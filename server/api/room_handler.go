@@ -5,15 +5,12 @@ import (
 	"app/db"
 	"app/types"
 	"app/utils"
-	"context"
 	"errors"
 	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -93,7 +90,7 @@ func (h *RoomHandler) HandlePostRoomBooking(ctx *fiber.Ctx) error {
 		return custerr.BadRequest()
 	}
 
-	ok, err := h.isRoomAvailable(ctx.Context(), roomID, &roomBookingParams)
+	ok, err := h.store.Booking.IsRoomAvailable(ctx.Context(), roomID, roomBookingParams.DateFrom, roomBookingParams.DateTill)
 
 	if err != nil {
 		return custerr.BadRequest()
@@ -120,34 +117,6 @@ func (h *RoomHandler) HandlePostRoomBooking(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.JSON(insertedBooking)
-}
-
-func (h *RoomHandler) isRoomAvailable(ctx context.Context, roomID string, roomBookingParams *RoomBookingParams) (bool, error) {
-
-	roomOID, err := primitive.ObjectIDFromHex(roomID)
-
-	if err != nil {
-		return false, custerr.BadRequest()
-	}
-
-	filter := bson.M{
-		"room_id": roomOID,
-		"date_from": bson.M{
-			"$gte": roomBookingParams.DateFrom,
-		},
-		"date_till": bson.M{
-			"$lte": roomBookingParams.DateTill,
-		},
-	}
-
-	bookings, err := h.store.Booking.GetBookings(ctx, filter)
-
-	if err != nil {
-		return false, custerr.BadRequest()
-	}
-
-	ok := len(bookings) == 0
-	return ok, nil
 }
 
 func (h *RoomHandler) HandleGetAllRooms(ctx *fiber.Ctx) error {

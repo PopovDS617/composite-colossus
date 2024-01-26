@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 type BookingHandler struct {
@@ -20,7 +19,7 @@ func NewBookingHandler(store *db.Store) *BookingHandler {
 
 func (h *BookingHandler) HandleGetBookings(ctx *fiber.Ctx) error {
 
-	bookings, err := h.store.Booking.GetBookings(ctx.Context(), bson.M{})
+	bookings, err := h.store.Booking.GetBookings(ctx.Context(), nil)
 
 	if err != nil {
 		return custerr.BadRequest()
