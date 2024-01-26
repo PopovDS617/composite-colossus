@@ -31,6 +31,14 @@ func main() {
 
 	wg.Wait()
 
+	adminUser := types.CreateUserParams{
+		FirstName: "admin",
+		LastName:  "admin",
+		Email:     "admin@mail.com",
+		Password:  "password",
+		IsAdmin:   true,
+	}
+
 	ctx := context.Background()
 
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DB_URI))
@@ -67,6 +75,9 @@ func main() {
 	}
 
 	var insertedUsers []*types.User
+
+	insertedAdminUser := fixtures.AddUser(db, adminUser)
+	_ = insertedAdminUser
 
 	for _, v := range usersList {
 

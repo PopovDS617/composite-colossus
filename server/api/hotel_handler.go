@@ -3,6 +3,7 @@ package api
 import (
 	"app/api/custerr"
 	"app/db"
+	"app/types"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -11,8 +12,14 @@ type HotelHandler struct {
 	store *db.Store
 }
 
-type GetHotelQueryParams struct {
-	Rooms  bool
+type HotelsRes struct {
+	Data           []*types.Hotel `json:"results"`
+	BatchSize      int            `json:"batch_size"`
+	PaginationPage int            `json:"pagination_page"`
+}
+
+type HotelsQueryParams struct {
+	db.Pagination
 	Rating int
 }
 
@@ -21,20 +28,29 @@ func NewHotelHandler(store *db.Store) *HotelHandler {
 }
 
 func (h *HotelHandler) HandleGetHotels(ctx *fiber.Ctx) error {
-
-	var qparams GetHotelQueryParams
+	var qparams HotelsQueryParams
 
 	if err := ctx.QueryParser(&qparams); err != nil {
 		return custerr.BadRequest()
 	}
 
-	hotels, err := h.store.Hotel.GetAll(ctx.Context(), "")
+	filter := db.Map{
+		"rating": qparams.Rating,
+	}
+
+	hotels, err := h.store.Hotel.GetAll(ctx.Context(), filter, &qparams.Pagination)
 
 	if err != nil {
 		return custerr.BadRequest()
 	}
 
-	return ctx.JSON(hotels)
+	response := HotelsRes{
+		BatchSize:      int(qparams.BatchSize),
+		PaginationPage: int(qparams.Page),
+		Data:           hotels,
+	}
+
+	return ctx.JSON(response)
 
 }
 

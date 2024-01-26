@@ -30,3 +30,10 @@ type Store struct {
 	Room    RoomStore
 	Booking BookingStore
 }
+
+type Pagination struct {
+	BatchSize int64 `query:"batch_size"`
+	Page      int64 `query:"pagination_page"`
+}
+
+type Map map[string]interface{}

@@ -1,44 +1,142 @@
 [
   {
-    "first_name": "Arthur",
-    "last_name": "Morgan",
-    "email": "test@mail1.com",
-    "password": "123123",
-    "is_admin": false
+    "first_name": "Aldric",
+    "last_name": "Shadowcaster",
+    "email": "aldrics@gmail.com",
+    "is_admin": false,
+    "password": "ShadowMystic123"
   },
   {
-    "first_name": "John",
-    "last_name": "Marston",
-    "email": "test@mail2.com",
-    "password": "123123",
-    "is_admin": false
+    "first_name": "Lyria",
+    "last_name": "Stormbringer",
+    "email": "lyria.storm@example.com",
+    "is_admin": false,
+    "password": "StormSorceress"
   },
   {
-    "first_name": "Dutch",
-    "last_name": "van der Linde",
-    "email": "test@mail3.com",
-    "password": "123123",
-    "is_admin": false
+    "first_name": "Thorn",
+    "last_name": "Ironforge",
+    "email": "thorn.iron@example.com",
+    "is_admin": false,
+    "password": "DwarvenDefender"
   },
   {
-    "first_name": "Hosea",
-    "last_name": "Matthews",
-    "email": "test@mail4.com",
-    "password": "123123",
-    "is_admin": false
+    "first_name": "Luna",
+    "last_name": "Moonshadow",
+    "email": "luna.moon@example.com",
+    "is_admin": false,
+    "password": "NightElfArcher"
   },
   {
-    "first_name": "Javier",
-    "last_name": "Escuella",
-    "email": "test@mail5.com",
-    "password": "123123",
-    "is_admin": false
+    "first_name": "Dread",
+    "last_name": "Darkheart",
+    "email": "dread.darkheart@example.com",
+    "is_admin": false,
+    "password": "DreadlordMinion"
   },
   {
-    "first_name": "admin",
-    "last_name": "admin",
-    "email": "admin@mail.com",
-    "password": "adminadmin",
-    "is_admin": true
+    "first_name": "Nyx",
+    "last_name": "Voidwhisper",
+    "email": "nyx.void@example.com",
+    "is_admin": false,
+    "password": "WhispersOfVoid"
+  },
+  {
+    "first_name": "Aelar",
+    "last_name": "Lightbinder",
+    "email": "aelar.light@example.com",
+    "is_admin": false,
+    "password": "RadiantHealer"
+  },
+  {
+    "first_name": "Thorn",
+    "last_name": "Greenleaf",
+    "email": "thorn.green@example.com",
+    "is_admin": false,
+    "password": "NatureGuardian"
+  },
+  {
+    "first_name": "Sylas",
+    "last_name": "Mooncaller",
+    "email": "sylas.moon@example.com",
+    "is_admin": false,
+    "password": "MoonkinMaster"
+  },
+  {
+    "first_name": "Grim",
+    "last_name": "Hellscream",
+    "email": "grim.hell@example.com",
+    "is_admin": false,
+    "password": "HellscreamLegacy"
+  },
+  {
+    "first_name": "Brum",
+    "last_name": "Stonemaul",
+    "email": "brum.stonemaul@example.com",
+    "is_admin": false,
+    "password": "OgreSmasher123"
+  },
+  {
+    "first_name": "Aran",
+    "last_name": "Wyrmslayer",
+    "email": "aran.wyrm@example.com",
+    "is_admin": false,
+    "password": "DragonSlayerKnight"
+  },
+  {
+    "first_name": "Valeria",
+    "last_name": "Shadowblade",
+    "email": "valeria.shadow@example.com",
+    "is_admin": false,
+    "password": "RogueAssassin"
+  },
+  {
+    "first_name": "Kael",
+    "last_name": "Sunflare",
+    "email": "kael.sun@example.com",
+    "is_admin": false,
+    "password": "SunwellMagister"
+  },
+  {
+    "first_name": "Fenris",
+    "last_name": "Bloodhoof",
+    "email": "fenris.bloodhoof@example.com",
+    "is_admin": false,
+    "password": "TaurenWarrior"
+  },
+  {
+    "first_name": "Tessa",
+    "last_name": "Lightforged",
+    "email": "tessa.lightforged@example.com",
+    "is_admin": false,
+    "password": "HolyCrusader"
+  },
+  {
+    "first_name": "Aria",
+    "last_name": "Windwhisper",
+    "email": "aria.windwhisper@example.com",
+    "is_admin": false,
+    "password": "WindwalkerMonk"
+  },
+  {
+    "first_name": "Rexx",
+    "last_name": "Beastmaster",
+    "email": "rexx.beastmaster@example.com",
+    "is_admin": false,
+    "password": "BeastTamerRexx"
+  },
+  {
+    "first_name": "Kara",
+    "last_name": "Archmage",
+    "email": "kara.archmage@example.com",
+    "is_admin": false,
+    "password": "SpellWeaver123"
+  },
+  {
+    "first_name": "Sara",
+    "last_name": "Battlecry",
+    "email": "sara.battlecry@example.com",
+    "is_admin": false,
+    "password": "WarriorMaiden"
   }
 ]
