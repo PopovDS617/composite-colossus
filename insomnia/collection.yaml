@@ -1,0 +1,564 @@
+_type: export
+__export_format: 4
+__export_date: 2024-01-26T10:02:03.150Z
+__export_source: insomnia.desktop.app:v8.6.0
+resources:
+  - _id: req_d12e6510d039484a965c9b67cb538765
+    parentId: fld_15ba97259aa041cdb0199a7eb77bf7d0
+    modified: 1706023816310
+    created: 1704790965449
+    url: http://localhost:5000/api/v1/users/65a6413352a8269b74294fc6
+    name: get user by id
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - name: User-Agent
+        value: insomnia/8.5.1
+    authentication: {}
+    metaSortKey: -1706023783223
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_15ba97259aa041cdb0199a7eb77bf7d0
+    parentId: wrk_1ee82686886c4ffabd39bbfd0d316a1c
+    modified: 1706023776974
+    created: 1706023776974
+    name: private
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1706023776974
+    _type: request_group
+  - _id: wrk_1ee82686886c4ffabd39bbfd0d316a1c
+    parentId: null
+    modified: 1705599497930
+    created: 1704790957534
+    name: go hotel reservation
+    description: ""
+    scope: collection
+    _type: workspace
+  - _id: req_069a30bed0714390af681c28e4bdd395
+    parentId: fld_15ba97259aa041cdb0199a7eb77bf7d0
+    modified: 1706023810506
+    created: 1705321317675
+    url: http://localhost:5000/api/v1/users
+    name: get all users
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - name: User-Agent
+        value: insomnia/8.5.1
+        id: pair_01abf18b38e848b491dcd9089f7f56f9
+      - id: pair_40fefc50d2c249b2b151bf604a09ccdb
+        name: X-Api-Token
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG1haWwuY29tIiwiZXhwaXJlcyI6MTcwNjA0NTA1NCwidXNlcl9pZCI6IjY1YWZkOWNhYmQwNGY1OTRiZGE1NjU5MyJ9.OhXOc4tPvfrgwbA81gEl1RP_lXzNkl0B1sYLBnQnQjI
+        description: ""
+    authentication: {}
+    metaSortKey: -1706023783123
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_fdd6353e3ace4c8e88216d4fa8c4bd55
+    parentId: fld_15ba97259aa041cdb0199a7eb77bf7d0
+    modified: 1706092477749
+    created: 1706012304114
+    url: http://localhost:5000/api/v1/booking
+    name: get all bookings
+    description: ""
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_b34e1ef8e28a4e5ca6092c3dc0694acc
+      - name: User-Agent
+        value: insomnia/8.5.1
+        id: pair_6b71fe5c8f84434094f1127a83eb7316
+      - id: pair_714caf4eb8404ad1a96246783fb595ff
+        name: X-Api-Token
+        value: ""
+        description: ""
+        disabled: false
+    authentication: {}
+    metaSortKey: -1706023782923
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_ddeabcbc832b456ca38b68a191dab2e5
+    parentId: fld_c7ec6849361f40debe627534e738be59
+    modified: 1706023878680
+    created: 1705330202489
+    url: http://localhost:5000/api/v1/users/65a6413352a8269b74294fc6
+    name: patch user
+    description: ""
+    method: PATCH
+    body:
+      mimeType: application/json
+      text: '{"first_name":"Abc"}'
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/8.5.1
+    authentication: {}
+    metaSortKey: -1706023758352
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_c7ec6849361f40debe627534e738be59
+    parentId: wrk_1ee82686886c4ffabd39bbfd0d316a1c
+    modified: 1706023742668
+    created: 1706023742668
+    name: public
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: -1706023742668
+    _type: request_group
+  - _id: req_f46c03770b774674adfdfcd8c4a05c83
+    parentId: fld_c7ec6849361f40debe627534e738be59
+    modified: 1706023876269
+    created: 1706007265362
+    url: http://localhost:5000/api/v1/rooms
+    name: get all rooms
+    description: ""
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters:
+      - id: pair_7d15e82e215b4562875f0309291bd203
+        name: ""
+        value: ""
+        description: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_f8b530477efd4139aafde49f0ef84d8d
+      - name: User-Agent
+        value: insomnia/8.5.1
+        id: pair_1a77b05eaf8940cf95d845639a181a7e
+      - id: pair_aeffe3cd104f458ebb352035035f68f0
+        name: X-Api-token
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAbWFpbDEuY29tIiwiZXhwaXJlcyI6MTcwNjAyNjIyOCwidXNlcl9pZCI6IjY1YTk3ZGZhNjI3NWJkZDZmZGJhZDUxNCJ9.Sr6EnApIMQ9J9DDdlLRJk9jxIHeI9Pvyc9GvSQN4ZyM
+        description: ""
+    authentication: {}
+    metaSortKey: -1706023758252
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_e7f457a15ba44268a38a6e868cad3bce
+    parentId: fld_c7ec6849361f40debe627534e738be59
+    modified: 1706023872778
+    created: 1705589718615
+    url: http://localhost:5000/api/v1/hotels/65a97dfa6275bdd6fdbad4b2/rooms
+    name: get rooms by hotel id
+    description: ""
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters:
+      - id: pair_7d15e82e215b4562875f0309291bd203
+        name: ""
+        value: ""
+        description: ""
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_f8b530477efd4139aafde49f0ef84d8d
+      - name: User-Agent
+        value: insomnia/8.5.1
+        id: pair_1a77b05eaf8940cf95d845639a181a7e
+      - id: pair_aeffe3cd104f458ebb352035035f68f0
+        name: X-Api-token
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAbWFpbDEuY29tIiwiZXhwaXJlcyI6MTcwNjAyNjIyOCwidXNlcl9pZCI6IjY1YTk3ZGZhNjI3NWJkZDZmZGJhZDUxNCJ9.Sr6EnApIMQ9J9DDdlLRJk9jxIHeI9Pvyc9GvSQN4ZyM
+        description: ""
+    authentication: {}
+    metaSortKey: -1706023758152
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_50138cf4358c4211bb46dbd1d091aa44
+    parentId: fld_c7ec6849361f40debe627534e738be59
+    modified: 1706104984369
+    created: 1706012361113
+    url: http://localhost:5000/api/v1/booking/65b118716f1e3a08c0b426ab
+    name: get booking by id
+    description: ""
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_b34e1ef8e28a4e5ca6092c3dc0694acc
+      - name: User-Agent
+        value: insomnia/8.5.1
+        id: pair_6b71fe5c8f84434094f1127a83eb7316
+      - id: pair_714caf4eb8404ad1a96246783fb595ff
+        name: X-Api-Token
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAbWFpbDIuY29tIiwiZXhwaXJlcyI6MTcwNjEyNjU3NiwidXNlcl9pZCI6IjY1YjEwMWYwNzdlNmFjYWY2NDUxNWRkZCJ9.oVI_qrrguIkI3MtuhZnKGzFz6LjW-IJ6osIZvuAwVu8
+        description: ""
+    authentication: {}
+    metaSortKey: -1706023758052
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_2f68372afcdc41d9b7ce9feb4bd69800
+    parentId: fld_c7ec6849361f40debe627534e738be59
+    modified: 1706032607157
+    created: 1706032163724
+    url: http://localhost:5000/api/v1/booking/65affd5dfe9736174556676a
+    name: cancel booking by id
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: ""
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_b34e1ef8e28a4e5ca6092c3dc0694acc
+      - name: User-Agent
+        value: insomnia/8.5.1
+        id: pair_6b71fe5c8f84434094f1127a83eb7316
+      - id: pair_714caf4eb8404ad1a96246783fb595ff
+        name: X-Api-Token
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG1haWwuY29tIiwiZXhwaXJlcyI6MTcwNjA0NTA1NCwidXNlcl9pZCI6IjY1YWZkOWNhYmQwNGY1OTRiZGE1NjU5MyJ9.OhXOc4tPvfrgwbA81gEl1RP_lXzNkl0B1sYLBnQnQjI
+        description: ""
+    authentication: {}
+    metaSortKey: -1706023758002
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_1071d639fd7f4532ae5095058918280f
+    parentId: fld_c7ec6849361f40debe627534e738be59
+    modified: 1706102757090
+    created: 1705322957683
+    url: http://localhost:5000/api/v1/users
+    name: post user
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: '{"first_name":"Rock","last_name":"Star","email":"test@gmail.com","password":"12313131"}'
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/8.5.1
+    authentication: {}
+    metaSortKey: -1706023757952
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_7db5a64be7264618bbed675739afc6d6
+    parentId: fld_c7ec6849361f40debe627534e738be59
+    modified: 1706100385811
+    created: 1705591557625
+    url: http://localhost:5000/api/v1/hotels/65b101f177e6acaf64515de
+    name: get hotel
+    description: ""
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/8.5.1
+    authentication: {}
+    metaSortKey: -1706023757852
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_a273a759b6b54ba7a9f3d242eb743beb
+    parentId: fld_c7ec6849361f40debe627534e738be59
+    modified: 1706023851163
+    created: 1705584877335
+    url: http://localhost:5000/api/v1/hotels
+    name: get hotels
+    description: ""
+    method: GET
+    body:
+      mimeType: application/json
+      text: ""
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_b34e1ef8e28a4e5ca6092c3dc0694acc
+      - name: User-Agent
+        value: insomnia/8.5.1
+        id: pair_6b71fe5c8f84434094f1127a83eb7316
+      - id: pair_714caf4eb8404ad1a96246783fb595ff
+        name: X-Api-Token
+        value: 12312421adadad
+        description: ""
+    authentication: {}
+    metaSortKey: -1706023757752
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_9772147946b94a8692eb94c6aec62312
+    parentId: fld_c7ec6849361f40debe627534e738be59
+    modified: 1706105022009
+    created: 1705918047132
+    url: http://localhost:5000/api/v1/rooms/65b101f177e6acaf64515dfe/booking
+    name: post book room
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"date_from": "2024-05-22T00:00:00.0Z",
+        	"date_till": "2024-05-27T00:00:00.0Z",
+        	"num_persons": 2
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_3c59d572bb9f4c46bc46e20eb098b67f
+      - name: User-Agent
+        value: insomnia/8.5.1
+        id: pair_f9aeddd255854a648663c863b16412f3
+      - id: pair_05e36335bea146dda7f1ac8ff0f0ae73
+        name: X-Api-Token
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAbWFpbDIuY29tIiwiZXhwaXJlcyI6MTcwNjEyNjU3NiwidXNlcl9pZCI6IjY1YjEwMWYwNzdlNmFjYWY2NDUxNWRkZCJ9.oVI_qrrguIkI3MtuhZnKGzFz6LjW-IJ6osIZvuAwVu8
+        description: ""
+    authentication: {}
+    metaSortKey: -1706023757652
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_bdfaa8dc98b64ae4ad591bf9b3017fa5
+    parentId: fld_c7ec6849361f40debe627534e738be59
+    modified: 1706023767062
+    created: 1705328830806
+    url: http://localhost:5000/api/v1/users/65a53dc68b5d17db747695fc
+    name: delete user
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers:
+      - name: User-Agent
+        value: insomnia/8.5.1
+    authentication: {}
+    metaSortKey: -1706023757552
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_db7b7de8bdf641ef88c95277f275f31f
+    parentId: fld_c7ec6849361f40debe627534e738be59
+    modified: 1706102746508
+    created: 1705603724163
+    url: http://localhost:5000/api/v1/login
+    name: post login as admin
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: '{"email":"admin@mail.com","password":"adminadmin"}'
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_ec02a3c61d9545719d3be90fa1aa5f07
+      - name: User-Agent
+        value: insomnia/8.5.1
+        id: pair_438ae893274248259713023030dfbb20
+      - id: pair_e83588ab3a2541179a66e16df47c4b4d
+        name: X-Api-Token
+        value: "123123123"
+        description: ""
+    authentication: {}
+    metaSortKey: -1706023757452
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_f7d04bd0a71f430e8654639338d222e5
+    parentId: fld_c7ec6849361f40debe627534e738be59
+    modified: 1706104974974
+    created: 1706023651052
+    url: http://localhost:5000/api/v1/login
+    name: post login as user
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: '{"email":"test@mail2.com","password":"123123"}'
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+        id: pair_ec02a3c61d9545719d3be90fa1aa5f07
+      - name: User-Agent
+        value: insomnia/8.5.1
+        id: pair_438ae893274248259713023030dfbb20
+      - id: pair_e83588ab3a2541179a66e16df47c4b4d
+        name: X-Api-Token
+        value: "123123123"
+        description: ""
+    authentication: {}
+    metaSortKey: -1706023757352
+    isPrivate: false
+    pathParameters: []
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: env_3ee5fa835a0c80ea3e8b38958d6e163daa1e9916
+    parentId: wrk_1ee82686886c4ffabd39bbfd0d316a1c
+    modified: 1704790957537
+    created: 1704790957537
+    name: Base Environment
+    data: {}
+    dataPropertyOrder: null
+    color: null
+    isPrivate: false
+    metaSortKey: 1704790957537
+    _type: environment
+  - _id: jar_3ee5fa835a0c80ea3e8b38958d6e163daa1e9916
+    parentId: wrk_1ee82686886c4ffabd39bbfd0d316a1c
+    modified: 1704790974774
+    created: 1704790957539
+    name: Default Jar
+    cookies:
+      - key: 1P_JAR
+        value: 2024-01-09-09
+        expires: 2024-02-08T09:02:54.000Z
+        domain: google.com
+        path: /
+        secure: true
+        hostOnly: false
+        creation: 2024-01-09T09:02:54.771Z
+        lastAccessed: 2024-01-09T09:02:54.771Z
+        id: 4efb085a-16e3-45c4-9d5f-f634d6540e75
+      - key: AEC
+        value: Ae3NU9NBOiHVLeTDwMIFNeNVpQ75-fK2it5ttXnK3VR9AECeKf4gcjBAT-g
+        expires: 2024-07-07T09:02:54.000Z
+        domain: google.com
+        path: /
+        secure: true
+        httpOnly: true
+        hostOnly: false
+        creation: 2024-01-09T09:02:54.773Z
+        lastAccessed: 2024-01-09T09:02:54.773Z
+        sameSite: lax
+        id: 7c5fa946-e3a3-4bb2-b046-585d7752c5f0
+      - key: NID
+        value: 511=tIP9MRoC0XWXgGPaGMYcyPoPV8UkxUOHlV2OknAwOGM7Jh5mA3cIck1SB3KEtA6KaQ90F5570vpmPNSEXqWQJtXDRRXF8bAG5LBWzdee1bkLx7r81w4p4DViYjJtE9-2LbwQvmY1rfQ-WbJG5kLR54Rdxy3bXFhILsXWI3ohJEM
+        expires: 2024-07-10T09:02:54.000Z
+        domain: google.com
+        path: /
+        httpOnly: true
+        hostOnly: false
+        creation: 2024-01-09T09:02:54.773Z
+        lastAccessed: 2024-01-09T09:02:54.773Z
+        id: 473b8cdf-6d80-4a87-9dca-2e9306cab3b3
+    _type: cookie_jar
