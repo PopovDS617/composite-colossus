@@ -5,13 +5,14 @@ import (
 	"app/api/custerr"
 	"app/api/middleware"
 	"app/db"
+	"os"
 
 	"context"
-	"flag"
 
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -22,10 +23,12 @@ var config = fiber.Config{
 
 func main() {
 
-	listenAddr := flag.String("listenAddr", ":5000", "The listen address of the API server")
-	flag.Parse()
+	MongoDBURI := os.Getenv("MONGO_DB_URI")
+	MongoDBName := os.Getenv(db.EnvName)
 
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DB_URI))
+	listenAddress := os.Getenv("HTTP_LISTEN_ADDRESS")
+
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(MongoDBURI))
 
 	if err != nil {
 		log.Fatal(err)
@@ -34,10 +37,10 @@ func main() {
 	// stores
 	var (
 		store = &db.Store{
-			Hotel:   db.NewMongoHotelStore(client, db.DB_NAME),
-			Room:    db.NewMongoRoomStore(client, db.DB_NAME),
-			User:    db.NewMongoUserStore(client, db.DB_NAME),
-			Booking: db.NewMongoBookingStore(client, db.DB_NAME),
+			Hotel:   db.NewMongoHotelStore(client, MongoDBName),
+			Room:    db.NewMongoRoomStore(client, MongoDBName),
+			User:    db.NewMongoUserStore(client, MongoDBName),
+			Booking: db.NewMongoBookingStore(client, MongoDBName),
 		}
 	)
 
@@ -85,6 +88,13 @@ func main() {
 	// booking
 	apiV1.Get("/booking", middleware.JWTAuthentication(store.User), middleware.AdminAuth, bookingHandler.HandleGetBookings)
 
-	app.Listen(*listenAddr)
+	app.Listen(listenAddress)
+
+}
+
+func init() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatal(err)
+	}
 
 }

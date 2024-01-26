@@ -4,8 +4,10 @@ import (
 	"app/db"
 	"context"
 	"log"
+	"os"
 	"testing"
 
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -14,21 +16,22 @@ type testdb struct {
 	db.Store
 }
 
-const testdburi = "mongodb://root:password@localhost:27017/?authSource=admin"
-const testdbname = "hotel-reservation-test"
-
 func setupDB(t *testing.T) *testdb {
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(testdburi))
+
+	testDBURI := os.Getenv("MONGO_DB_URI_TEST")
+	testDBName := os.Getenv("MONGO_DB_NAME_TEST")
+
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(testDBURI))
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	return &testdb{Store: db.Store{
-		User:    db.NewMongoUserStore(client, testdbname),
-		Hotel:   db.NewMongoHotelStore(client, testdbname),
-		Room:    db.NewMongoRoomStore(client, testdbname),
-		Booking: db.NewMongoBookingStore(client, testdbname)},
+		User:    db.NewMongoUserStore(client, testDBName),
+		Hotel:   db.NewMongoHotelStore(client, testDBName),
+		Room:    db.NewMongoRoomStore(client, testDBName),
+		Booking: db.NewMongoBookingStore(client, testDBName)},
 	}
 
 }
@@ -52,5 +55,11 @@ func (tdb *testdb) teardown(t *testing.T) {
 	err = tdb.Booking.Drop(context.TODO())
 	if err != nil {
 		t.Fatal(err)
+	}
+}
+
+func init() {
+	if err := godotenv.Load("/app/.env"); err != nil {
+		log.Fatal(err)
 	}
 }

@@ -17,6 +17,14 @@ services:
       retries: 5
       start_period: 10s
 
+  api:
+    build: ./server
+    container_name: goapp
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+
 volumes:
   data:
   logs:
