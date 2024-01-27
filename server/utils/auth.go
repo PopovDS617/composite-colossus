@@ -5,6 +5,7 @@ import (
 	"app/types"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -20,10 +21,7 @@ func ValidateToken(inputToken string) (jwt.MapClaims, error) {
 			return nil, custerr.Unauthorized()
 		}
 
-		// secret := os.Getenv("JWT_SECRET")
-
-		// TODO: add proper env
-		secret := []byte("secretsupersecret")
+		secret := os.Getenv("JWT_SECRET")
 
 		return []byte(secret), nil
 	})
@@ -61,14 +59,11 @@ func CreateToken(user *types.User) string {
 		"expires": expires,
 	}
 
-	// secret := os.Getenv("JWT_SECRET")
-
-	// TODO: add proper env
-	secret := []byte("secretsupersecret")
+	secret := os.Getenv("JWT_SECRET")
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims, nil)
 
-	tokenStr, err := token.SignedString(secret)
+	tokenStr, err := token.SignedString([]byte(secret))
 
 	if err != nil {
 

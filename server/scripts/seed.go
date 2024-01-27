@@ -9,8 +9,10 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"os"
 	"sync"
 
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -41,28 +43,35 @@ func main() {
 
 	ctx := context.Background()
 
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(db.DB_URI))
+	if err := godotenv.Load(); err != nil {
+		log.Fatal(err)
+	}
+
+	MongoDBURI := os.Getenv("MONGO_DB_URI")
+	MongoDBName := os.Getenv(db.EnvName)
+
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(MongoDBURI))
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	hotelStore := db.NewMongoHotelStore(client, db.DB_NAME)
+	hotelStore := db.NewMongoHotelStore(client, MongoDBName)
 
 	if err := hotelStore.Drop(ctx); err != nil {
 		log.Fatal(err)
 	}
 
-	roomStore := db.NewMongoRoomStore(client, db.DB_NAME)
+	roomStore := db.NewMongoRoomStore(client, MongoDBName)
 	if err := roomStore.Drop(ctx); err != nil {
 		log.Fatal(err)
 	}
 
-	userStore := db.NewMongoUserStore(client, db.DB_NAME)
+	userStore := db.NewMongoUserStore(client, MongoDBName)
 	if err := userStore.Drop(ctx); err != nil {
 		log.Fatal(err)
 	}
-	bookingStore := db.NewMongoBookingStore(client, db.DB_NAME)
+	bookingStore := db.NewMongoBookingStore(client, MongoDBName)
 	if err := bookingStore.Drop(ctx); err != nil {
 		log.Fatal(err)
 	}
