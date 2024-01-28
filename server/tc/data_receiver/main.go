@@ -1,27 +1,20 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"receiver/middleware"
+	"receiver/producer"
+	"receiver/types"
 
-	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"github.com/gorilla/websocket"
 )
 
-var kafkaTopic = "obudata"
-
-type OBUData struct {
-	OBUID int     `json:"obu_id"`
-	Lat   float64 `json:"lat"`
-	Long  float64 `json:"long"`
-}
-
 type DataReceiver struct {
-	msgCh    chan OBUData
+	msgCh    chan types.OBUData
 	wsConn   *websocket.Conn
-	producer *kafka.Producer
+	producer producer.DataProducer
 }
 
 func (receiver *DataReceiver) handleWS(w http.ResponseWriter, r *http.Request) {
@@ -46,7 +39,7 @@ func (receiver *DataReceiver) handleWS(w http.ResponseWriter, r *http.Request) {
 func (receiver *DataReceiver) handleReceiveWS() {
 	fmt.Println("--- new obu connected")
 	for {
-		var data OBUData
+		var data types.OBUData
 		if err := receiver.wsConn.ReadJSON(&data); err != nil {
 			log.Println("read error", err)
 			continue
@@ -56,68 +49,43 @@ func (receiver *DataReceiver) handleReceiveWS() {
 		err := receiver.produceData(data)
 
 		if err != nil {
-			fmt.Println("kafka produce error:", err)
+			fmt.Println("produce error:", err)
 		}
 
 	}
 
 }
 
-func newDataReceiver() (*DataReceiver, error) {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost"})
-	if err != nil {
-		panic(err)
-	}
+func newDataReceiver(producer producer.DataProducer) (*DataReceiver, error) {
 
-	if err != nil {
-		return nil, err
-	}
-
-	go func() {
-		for e := range p.Events() {
-			switch ev := e.(type) {
-			case *kafka.Message:
-				if ev.TopicPartition.Error != nil {
-					fmt.Printf("Delivery failed: %v\n", ev.TopicPartition)
-				} else {
-					fmt.Printf("Delivered message to %v\n", ev.TopicPartition)
-				}
-			}
-		}
-	}()
+	producer = middleware.NewLogMiddleware(producer)
 
 	return &DataReceiver{
-		msgCh:    make(chan OBUData, 128),
-		producer: p,
+		msgCh:    make(chan types.OBUData, 128),
+		producer: producer,
 	}, nil
 }
 
-func (receiver *DataReceiver) produceData(data OBUData) error {
-
-	b, err := json.Marshal(data)
-
-	if err != nil {
-		return err
-	}
-
-	err = receiver.producer.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &kafkaTopic,
-			Partition: kafka.PartitionAny},
-		Value: b,
-	}, nil)
-
-	return err
+func (receiver *DataReceiver) produceData(data types.OBUData) error {
+	return receiver.producer.ProduceData(data)
 }
 
 func main() {
 
-	receiver, err := newDataReceiver()
+	var kafkaTopic = "obudata"
+
+	producer, err := producer.NewKafkaProducer(kafkaTopic)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	defer receiver.producer.Close()
+	receiver, err := newDataReceiver(producer)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	// defer receiver.producer.Close()
 
 	http.HandleFunc("/ws", receiver.handleWS)
 	http.ListenAndServe(":30000", nil)
