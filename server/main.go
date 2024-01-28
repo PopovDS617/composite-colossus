@@ -5,6 +5,7 @@ import (
 	"app/api/custerr"
 	"app/api/middleware"
 	"app/db"
+	"fmt"
 	"os"
 
 	"context"
@@ -12,7 +13,6 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -88,13 +88,6 @@ func main() {
 	// booking
 	apiV1.Get("/booking", middleware.JWTAuthentication(store.User), middleware.AdminAuth, bookingHandler.HandleGetBookings)
 
-	app.Listen(listenAddress)
-
-}
-
-func init() {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal(err)
-	}
+	app.Listen(fmt.Sprintf(":%s", listenAddress))
 
 }

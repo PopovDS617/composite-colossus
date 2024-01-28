@@ -1,6 +1,6 @@
 _type: export
 __export_format: 4
-__export_date: 2024-01-26T10:02:03.150Z
+__export_date: 2024-01-28T07:00:33.228Z
 __export_source: insomnia.desktop.app:v8.6.0
 resources:
   - _id: req_d12e6510d039484a965c9b67cb538765
@@ -76,7 +76,7 @@ resources:
     _type: request
   - _id: req_fdd6353e3ace4c8e88216d4fa8c4bd55
     parentId: fld_15ba97259aa041cdb0199a7eb77bf7d0
-    modified: 1706092477749
+    modified: 1706265101132
     created: 1706012304114
     url: http://localhost:5000/api/v1/booking
     name: get all bookings
@@ -95,7 +95,7 @@ resources:
         id: pair_6b71fe5c8f84434094f1127a83eb7316
       - id: pair_714caf4eb8404ad1a96246783fb595ff
         name: X-Api-Token
-        value: ""
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG1haWwuY29tIiwiZXhwaXJlcyI6MTcwNjI4NjY5NSwidXNlcl9pZCI6IjY1YjEwMWYxNzdlNmFjYWY2NDUxNWRlMSJ9.m0jXdDrmk_SIslr9IWMUp2m1TF9UlQdpg2ZGe0gtBbI
         description: ""
         disabled: false
     authentication: {}
@@ -149,9 +149,9 @@ resources:
     _type: request_group
   - _id: req_f46c03770b774674adfdfcd8c4a05c83
     parentId: fld_c7ec6849361f40debe627534e738be59
-    modified: 1706023876269
+    modified: 1706279142199
     created: 1706007265362
-    url: http://localhost:5000/api/v1/rooms
+    url: http://127.0.0.1:5000/api/v1/rooms
     name: get all rooms
     description: ""
     method: GET
@@ -349,9 +349,9 @@ resources:
     _type: request
   - _id: req_a273a759b6b54ba7a9f3d242eb743beb
     parentId: fld_c7ec6849361f40debe627534e738be59
-    modified: 1706023851163
+    modified: 1706274412442
     created: 1705584877335
-    url: http://localhost:5000/api/v1/hotels
+    url: http://localhost:5000/api/v1/hotels?pagination_page=1&batch_size=5&rating=2
     name: get hotels
     description: ""
     method: GET
@@ -383,7 +383,7 @@ resources:
     _type: request
   - _id: req_9772147946b94a8692eb94c6aec62312
     parentId: fld_c7ec6849361f40debe627534e738be59
-    modified: 1706105022009
+    modified: 1706265038803
     created: 1705918047132
     url: http://localhost:5000/api/v1/rooms/65b101f177e6acaf64515dfe/booking
     name: post book room
@@ -393,8 +393,8 @@ resources:
       mimeType: application/json
       text: |-
         {
-        	"date_from": "2024-05-22T00:00:00.0Z",
-        	"date_till": "2024-05-27T00:00:00.0Z",
+        	"date_from": "2025-05-22T00:00:00.0Z",
+        	"date_till": "2025-05-27T00:00:00.0Z",
         	"num_persons": 2
         }
     parameters: []
@@ -407,7 +407,7 @@ resources:
         id: pair_f9aeddd255854a648663c863b16412f3
       - id: pair_05e36335bea146dda7f1ac8ff0f0ae73
         name: X-Api-Token
-        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAbWFpbDIuY29tIiwiZXhwaXJlcyI6MTcwNjEyNjU3NiwidXNlcl9pZCI6IjY1YjEwMWYwNzdlNmFjYWY2NDUxNWRkZCJ9.oVI_qrrguIkI3MtuhZnKGzFz6LjW-IJ6osIZvuAwVu8
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAbWFpbDIuY29tIiwiZXhwaXJlcyI6MTcwNjI4NjYxOSwidXNlcl9pZCI6IjY1YjEwMWYwNzdlNmFjYWY2NDUxNWRkZCJ9.J3oOQ5CWGF0ts4NjuAducvFEy5Igk_rdE-gYHph-qNA
         description: ""
     authentication: {}
     metaSortKey: -1706023757652

@@ -7,7 +7,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -55,11 +54,5 @@ func (tdb *testdb) teardown(t *testing.T) {
 	err = tdb.Booking.Drop(context.TODO())
 	if err != nil {
 		t.Fatal(err)
-	}
-}
-
-func init() {
-	if err := godotenv.Load("/app/.env"); err != nil {
-		log.Fatal(err)
 	}
 }
