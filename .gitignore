@@ -1,4 +1,12 @@
-*.exe
-*/bin/**
+# ide
 */.vscode/*
+
+# env
 .env
+
+# bin
+bin/
+
+# go
+go.work
+go.work.sum
