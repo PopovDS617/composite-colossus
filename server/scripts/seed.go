@@ -12,7 +12,6 @@ import (
 	"os"
 	"sync"
 
-	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -42,10 +41,6 @@ func main() {
 	}
 
 	ctx := context.Background()
-
-	if err := godotenv.Load(); err != nil {
-		log.Fatal(err)
-	}
 
 	MongoDBURI := os.Getenv("MONGO_DB_URI")
 	MongoDBName := os.Getenv(db.EnvName)

@@ -20,6 +20,13 @@ services:
   api:
     build: ./server
     container_name: goapp
+    environment:
+      HTTP_LISTEN_ADDRESS: 5000
+      JWT_SECRET: secretsecretsecretsecretsecretsecretsecretsecret
+      MONGO_DB_NAME: hotel-reservation
+      MONGO_DB_URI: mongodb://root:password@mongodb/?authSource=admin
+      MONGO_DB_NAME_TEST: hotel-reservation-test
+      MONGO_DB_URI_TEST: mongodb://root:password@mongodb/?authSource=admin
     ports:
       - "5000:5000"
     depends_on:
