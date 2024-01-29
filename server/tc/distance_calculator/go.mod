@@ -1,10 +1,9 @@
-module receiver
+module dist_calc
 
 go 1.21.6
 
 require (
 	github.com/confluentinc/confluent-kafka-go/v2 v2.3.0
-	github.com/gorilla/websocket v1.5.1
 	github.com/sirupsen/logrus v1.9.3
 )
 
