@@ -12,7 +12,7 @@ import (
 
 const wsEndpoint = "ws://127.0.0.1:30000/ws"
 
-var updateInterval = time.Second * 1
+var updateInterval = time.Second * 3
 
 func getCoord() float64 {
 	n := float64(rand.Intn(100) + 1)
@@ -69,7 +69,3 @@ func main() {
 		time.Sleep(updateInterval)
 	}
 }
-
-// func init() {
-// 	r := rand.New(rand.NewSource(seed))
-// }
