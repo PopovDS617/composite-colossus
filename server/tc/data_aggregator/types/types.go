@@ -11,3 +11,9 @@ type OBUData struct {
 	Lat   float64 `json:"lat"`
 	Long  float64 `json:"long"`
 }
+
+type Invoice struct {
+	OBUID         int     `json:"obu_id"`
+	TotalDistance float64 `json:"total_distance"`
+	TotalAmount   float64 `json:"total_amount"`
+}

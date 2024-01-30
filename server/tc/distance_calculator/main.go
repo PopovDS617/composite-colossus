@@ -10,9 +10,10 @@ import (
 
 func main() {
 	var (
-		kafkaTopic         = "obudata"
-		service            = service.NewCalculatorService()
-		aggregatorEndpoint = "http://localhost:3000/aggregator"
+		kafkaTopic = "obudata"
+		service    = service.NewCalculatorService()
+		// aggregatorEndpoint = "http://data_aggregator:9000/aggregator"
+		aggregatorEndpoint = "http://localhost:9000/aggregator"
 	)
 	service = middleware.NewLogMiddleware(service)
 

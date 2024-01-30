@@ -21,6 +21,7 @@ type DataConsumer struct {
 func NewDataConsumer(topic string, svc service.Calculator, client *client.Client) (*DataConsumer, error) {
 
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
+		// "bootstrap.servers": "kafka:29092",
 		"bootstrap.servers": "localhost",
 		"group.id":          "myGroup",
 		"auto.offset.reset": "earliest",
@@ -52,25 +53,26 @@ func (c *DataConsumer) readMessageLoop() {
 		if err != nil {
 			logrus.Errorf("kafka consume error %s", err)
 
-		}
-		var data types.OBUData
-		if err := json.Unmarshal(msg.Value, &data); err != nil {
-			logrus.Errorf("JSON serialization error: %s", err)
+		} else {
+			var data types.OBUData
+			if err := json.Unmarshal(msg.Value, &data); err != nil {
+				logrus.Errorf("JSON serialization error: %s", err)
 
-		}
-		distance, err := c.service.CalculateDistance(data)
-		if err != nil {
-			logrus.Errorf("calculation error %s:", err)
-		}
+			}
+			distance, err := c.service.CalculateDistance(data)
+			if err != nil {
+				logrus.Errorf("calculation error %s:", err)
+			}
 
-		result := types.Distance{
-			Value: distance,
-			Unix:  time.Now().Unix(),
-			OBUID: data.OBUID,
-		}
+			result := types.Distance{
+				Value: distance,
+				Unix:  time.Now().Unix(),
+				OBUID: data.OBUID,
+			}
 
-		if err := c.client.AggregateInvoice(result); err != nil {
-			logrus.Error("aggregate error:", err)
+			if err := c.client.AggregateInvoice(result); err != nil {
+				logrus.Error("aggregate error:", err)
+			}
 		}
 	}
 

@@ -13,7 +13,7 @@ func main() {
 
 	var svc service.Aggregator
 
-	listenAddress := ":3000"
+	listenAddress := ":9000"
 
 	store := store.NewMemoryStore()
 
@@ -27,5 +27,6 @@ func main() {
 func makeHTTPTransport(port string, svc service.Aggregator) {
 	fmt.Println("http transport running on port", port)
 	http.HandleFunc("/aggregator", handlers.HandleAggregate(svc))
+	http.HandleFunc("/invoice", handlers.HandleGetInvoice(svc))
 	http.ListenAndServe(port, nil)
 }

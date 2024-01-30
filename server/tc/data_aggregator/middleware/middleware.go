@@ -30,3 +30,15 @@ func (lg *LogMiddleware) AggregateDistance(distance types.Distance) (err error) 
 
 	return
 }
+func (lg *LogMiddleware) GenerateInvoice(id int) (invoice *types.Invoice, err error) {
+	defer func(start time.Time) {
+		logrus.WithFields(logrus.Fields{
+			"took": time.Since(start),
+			"err":  err,
+		}).Info()
+	}(time.Now())
+
+	invoice, err = lg.next.GenerateInvoice(id)
+
+	return
+}

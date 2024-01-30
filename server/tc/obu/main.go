@@ -8,9 +8,11 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/sirupsen/logrus"
 )
 
-const wsEndpoint = "ws://127.0.0.1:30000/ws"
+// const wsEndpoint = "ws://data_receiver:30000/ws"
+const wsEndpoint = "ws://localhost:30000/ws"
 
 var updateInterval = time.Second * 3
 
@@ -47,7 +49,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	obuIDs := generateOBUIDs(25)
+	obuIDs := generateOBUIDs(15)
 
 	for {
 
@@ -60,6 +62,8 @@ func main() {
 				Lat:   lat,
 				Long:  long,
 			}
+
+			logrus.Info(data)
 
 			if err := sendOBUData(wsConn, data); err != nil {
 				log.Fatal(err)
