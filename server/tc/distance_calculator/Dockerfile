@@ -6,8 +6,8 @@ COPY . .
 
 RUN go mod tidy
 
-RUN apk --no-cache update && \
-apk --no-cache add git gcc libc-dev
+RUN apk update && \
+apk add git gcc libc-dev
 
 
 ENV CGO_ENABLED 1

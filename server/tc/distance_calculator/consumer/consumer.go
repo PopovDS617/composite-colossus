@@ -21,8 +21,8 @@ type DataConsumer struct {
 func NewDataConsumer(topic string, svc service.Calculator, client *client.Client) (*DataConsumer, error) {
 
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
-		// "bootstrap.servers": "kafka:29092",
-		"bootstrap.servers": "localhost",
+		"bootstrap.servers": "kafka:29092",
+		// "bootstrap.servers": "localhost",
 		"group.id":          "myGroup",
 		"auto.offset.reset": "earliest",
 	})
