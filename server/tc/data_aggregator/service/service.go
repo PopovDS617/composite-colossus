@@ -5,12 +5,16 @@ import (
 	"fmt"
 )
 
+const price = 1.216
+
 type Aggregator interface {
 	AggregateDistance(types.Distance) error
+	GenerateInvoice(int) (*types.Invoice, error)
 }
 
 type Storer interface {
 	Put(types.Distance) error
+	Get(int) (float64, error)
 }
 
 type InvoiceAggregator struct {
@@ -26,4 +30,21 @@ func NewInvoiceAggregator(store Storer) *InvoiceAggregator {
 func (ia *InvoiceAggregator) AggregateDistance(data types.Distance) error {
 	fmt.Println("inserting distance in the storage")
 	return ia.store.Put(data)
+}
+
+func (ia *InvoiceAggregator) GenerateInvoice(id int) (*types.Invoice, error) {
+	fmt.Println("generating invoice")
+
+	distance, err := ia.store.Get(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	inv := &types.Invoice{
+		OBUID:         id,
+		TotalDistance: distance,
+		TotalAmount:   distance * price,
+	}
+	return inv, nil
 }

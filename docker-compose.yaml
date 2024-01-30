@@ -17,9 +17,8 @@ services:
       timeout: 10s
       retries: 5
       start_period: 10s
-
   api:
-    build: ./server
+    build: ./server/hr
     container_name: hc_api
     environment:
       HTTP_LISTEN_ADDRESS: 5000
@@ -32,7 +31,7 @@ services:
       - "5000:5000"
     depends_on:
       - mongodb
-  broker:
+  kafka:
     image: confluentinc/cp-kafka:7.5.0
     container_name: broker
     ports:
@@ -53,6 +52,49 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_LOG_DIRS: /tmp/kraft-combined-logs
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+  # zookeeper:
+  #   image: confluentinc/cp-zookeeper:latest
+  #   environment:
+  #     ZOOKEEPER_CLIENT_PORT: 2181
+  #     ZOOKEEPER_TICK_TIME: 2000
+  #   ports:
+  #     - 22181:2181
+  # kafka:
+  #   image: confluentinc/cp-kafka:latest
+  #   depends_on:
+  #     - zookeeper
+  #   ports:
+  #     # - 29092:29092
+  #     - 9092:9092
+  #   hostname: kafka
+  #   environment:
+  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+  #     KAFKA_BROKER_ID: 1
+  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+  #     KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+  # obu:
+  #   build: ./server/tc/obu
+  #   container_name: obu_api
+  #   depends_on:
+  #     - data_receiver
+  # data_receiver:
+  #   build: ./server/tc/data_receiver
+  #   container_name: data_receiver_api
+  #   ports:
+  #     - "30000:30000"
+  #   depends_on:
+  #     - kafka
+  # distance_calculator:
+  #   build: ./server/tc/distance_calculator
+  #   container_name: distance_calculator_api
+  #   depends_on:
+  #     - data_receiver
+  # data_aggregator:
+  #   build: ./server/tc/data_aggregator
+  #   container_name: data_aggregator_api
+  #   depends_on:
+  #     - kafka
 
 volumes:
   data:

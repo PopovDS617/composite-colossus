@@ -17,7 +17,10 @@ type KafkaProducer struct {
 }
 
 func NewKafkaProducer(topic string) (*KafkaProducer, error) {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost"})
+	p, err := kafka.NewProducer(&kafka.ConfigMap{
+		// "bootstrap.servers": "kafka",
+		"bootstrap.servers": "localhost",
+	})
 	if err != nil {
 		panic(err)
 	}
