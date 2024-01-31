@@ -11,8 +11,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// const wsEndpoint = "ws://data_receiver:30000/ws"
-const wsEndpoint = "ws://localhost:30000/ws"
+const wsEndpoint = "ws://data_receiver:30000/ws"
+
+// const wsEndpoint = "ws://localhost:30000/ws"
 
 var updateInterval = time.Second * 3
 
