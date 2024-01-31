@@ -49,10 +49,9 @@ services:
       - zookeeper
     ports:
       - "9092:9092"
-      - "9101:9101"
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
@@ -62,35 +61,34 @@ services:
       KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_JMX_PORT: 9101
       KAFKA_JMX_HOSTNAME: localhost
       KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka:29092
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
-      CONFLUENT_METRICS_ENABLE: 'true'
-      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
-  obu:
-    build: ./server/tc/obu
-    container_name: obu_api
-    depends_on:
-      - data_receiver
-  data_receiver:
-    build: ./server/tc/data_receiver
-    container_name: data_receiver_api
-    ports:
-      - "30000:30000"
-    depends_on:
-      - kafka
-  distance_calculator:
-    build: ./server/tc/distance_calculator
-    container_name: distance_calculator_api
-    depends_on:
-      - kafka
-  data_aggregator:
-    build: ./server/tc/data_aggregator
-    container_name: data_aggregator_api
-    depends_on:
-      - kafka
+      CONFLUENT_METRICS_ENABLE: "true"
+      CONFLUENT_SUPPORT_CUSTOMER_ID: "anonymous"
+#   obu:
+#     build: ./server/tc/obu
+#     container_name: obu_api
+#     depends_on:
+#       - data_receiver
+#   data_receiver:
+#     build: ./server/tc/data_receiver
+#     container_name: data_receiver_api
+#     ports:
+#       - "30000:30000"
+#     depends_on:
+#       - kafka
+#   distance_calculator:
+#     build: ./server/tc/distance_calculator
+#     container_name: distance_calculator_api
+#     depends_on:
+#       - kafka
+#   data_aggregator:
+#     build: ./server/tc/data_aggregator
+#     container_name: data_aggregator_api
+#     depends_on:
+#       - kafka
 
 volumes:
   data:
