@@ -15,12 +15,17 @@ daggr:
 	@go build -o bin/data_aggregator ./data_aggregator/main.go
 	@./bin/data_aggregator
 	
-runall: dcalc rcvr obu daggr
+gateway:
+	@go build -o bin/gateway ./gateway/main.go
+	@./bin/gateway
+
+runall: gateway dcalc rcvr obu daggr
 
 
 proto:
 	PATH="${PATH}:${HOME}/go/bin" protoc --go_out=.  --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative ./distance_calculator/pb/ptypes.proto
 	PATH="${PATH}:${HOME}/go/bin" protoc --go_out=.  --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative ./data_aggregator/pb/ptypes.proto
+	PATH="${PATH}:${HOME}/go/bin" protoc --go_out=.  --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative ./gateway/pb/ptypes.proto
 
 
-.PHONY: obu
+.PHONY: obu gateway
