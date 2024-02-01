@@ -17,10 +17,15 @@ func main() {
 	)
 	service = middleware.NewLogMiddleware(service)
 
-	client := client.NewClient(aggregatorEndpoint)
+	httpClient := client.NewHTTPClient(aggregatorEndpoint)
 
-	consumer, err := consumer.NewDataConsumer(kafkaTopic, service, client)
+	grpcClient, err := client.NewGRPCClient(":9001")
 
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	consumer, err := consumer.NewDataConsumer(kafkaTopic, service, httpClient, grpcClient)
 	if err != nil {
 		log.Fatal(err)
 	}

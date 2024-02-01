@@ -1,7 +1,9 @@
 package consumer
 
 import (
+	"context"
 	"dist_calc/client"
+	"dist_calc/pb"
 	"dist_calc/service"
 	"dist_calc/types"
 	"encoding/json"
@@ -12,13 +14,14 @@ import (
 )
 
 type DataConsumer struct {
-	consumer *kafka.Consumer
-	isUp     bool
-	service  service.Calculator
-	client   *client.Client
+	consumer   *kafka.Consumer
+	isUp       bool
+	service    service.Calculator
+	httpClient *client.HTTPClient
+	grpcClient *client.GRPCClient
 }
 
-func NewDataConsumer(topic string, svc service.Calculator, client *client.Client) (*DataConsumer, error) {
+func NewDataConsumer(topic string, svc service.Calculator, httpClient *client.HTTPClient, grpcClient *client.GRPCClient) (*DataConsumer, error) {
 
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		// "bootstrap.servers": "kafka:29092",
@@ -34,9 +37,10 @@ func NewDataConsumer(topic string, svc service.Calculator, client *client.Client
 	c.SubscribeTopics([]string{topic}, nil)
 
 	return &DataConsumer{
-		consumer: c,
-		service:  svc,
-		client:   client,
+		consumer:   c,
+		service:    svc,
+		httpClient: httpClient,
+		grpcClient: grpcClient,
 	}, nil
 }
 
@@ -64,13 +68,19 @@ func (c *DataConsumer) readMessageLoop() {
 				logrus.Errorf("calculation error %s:", err)
 			}
 
-			result := types.Distance{
+			httpReq := types.Distance{
 				Value: distance,
 				Unix:  time.Now().Unix(),
 				OBUID: data.OBUID,
 			}
 
-			if err := c.client.AggregateInvoice(result); err != nil {
+			if err := c.httpClient.AggregateInvoice(httpReq); err != nil {
+				logrus.Error("aggregate error:", err)
+			}
+
+			grpcReq := &pb.AggregateRequest{OBUID: int32(data.OBUID), Value: distance, Unix: time.Now().Unix()}
+
+			if _, err := c.grpcClient.AggregateDistance(context.Background(), grpcReq); err != nil {
 				logrus.Error("aggregate error:", err)
 			}
 		}
