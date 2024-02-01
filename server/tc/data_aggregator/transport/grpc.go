@@ -1,6 +1,7 @@
 package transport
 
 import (
+	"context"
 	"data_aggregator/pb"
 	"data_aggregator/service"
 	"data_aggregator/types"
@@ -17,12 +18,12 @@ func NewGRPCAggregatorServer(svc service.Aggregator) *GRPCAggregatorServer {
 	}
 }
 
-func (s *GRPCAggregatorServer) AggregateDistance(req pb.AggregateRequest) error {
+func (s *GRPCAggregatorServer) AggregateDistance(ctx context.Context, req *pb.AggregateRequest) (*pb.None, error) {
 	distance := types.Distance{
 		OBUID: int(req.OBUID),
 		Value: req.Value,
 		Unix:  req.Unix,
 	}
 
-	return s.svc.AggregateDistance(distance)
+	return &pb.None{}, s.svc.AggregateDistance(distance)
 }

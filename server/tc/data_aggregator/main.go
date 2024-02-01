@@ -41,7 +41,7 @@ func makeHTTPTransport(port string, svc service.Aggregator) {
 
 func makeGRPCTransport(listenAddr string, svc service.Aggregator) error {
 	fmt.Println("GRPC transport running on port", listenAddr)
-	// Make a TCP listener
+
 	ln, err := net.Listen("tcp", listenAddr)
 	if err != nil {
 		return err
@@ -50,9 +50,8 @@ func makeGRPCTransport(listenAddr string, svc service.Aggregator) error {
 		fmt.Println("stopping GRPC transport")
 		ln.Close()
 	}()
-	// Make a new GRPC native server with (options)
 	server := grpc.NewServer([]grpc.ServerOption{}...)
-	// Register (OUR) GRPC server implementation to the GRPC package.
+
 	pb.RegisterAggregatorServer(server, transport.NewGRPCAggregatorServer(svc))
 	return server.Serve(ln)
 }
