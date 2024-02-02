@@ -12,10 +12,15 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 )
 
 func main() {
+
+	logrus.SetFormatter(&logrus.TextFormatter{
+		DisableColors: true,
+	})
 
 	var svc service.Aggregator
 

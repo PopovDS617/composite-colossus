@@ -35,6 +35,7 @@ func (c *HTTPClient) GetInvoice(ctx context.Context, id int) (*types.Invoice, er
 	req, err := http.NewRequest("GET", endpoint, bytes.NewReader(b))
 	if err != nil {
 		return nil, err
+
 	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {

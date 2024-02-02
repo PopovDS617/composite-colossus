@@ -44,6 +44,10 @@ func generateOBUIDs(n int) []int {
 
 func main() {
 
+	logrus.SetFormatter(&logrus.TextFormatter{
+		DisableColors: true,
+	})
+
 	wsConn, _, err := websocket.DefaultDialer.Dial(wsEndpoint, nil)
 
 	if err != nil {

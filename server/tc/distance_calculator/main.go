@@ -6,9 +6,16 @@ import (
 	"dist_calc/middleware"
 	"dist_calc/service"
 	"log"
+
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
+
+	logrus.SetFormatter(&logrus.TextFormatter{
+		DisableColors: true,
+	})
+
 	var (
 		kafkaTopic = "obudata"
 		service    = service.NewCalculatorService()
