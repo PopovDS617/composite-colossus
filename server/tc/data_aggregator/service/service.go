@@ -2,7 +2,6 @@ package service
 
 import (
 	"data_aggregator/types"
-	"fmt"
 )
 
 const price = 1.216
@@ -28,12 +27,11 @@ func NewInvoiceAggregator(store Storer) *InvoiceAggregator {
 }
 
 func (ia *InvoiceAggregator) AggregateDistance(data types.Distance) error {
-	fmt.Println("inserting distance in the storage")
+
 	return ia.store.Put(data)
 }
 
 func (ia *InvoiceAggregator) GenerateInvoice(id int) (*types.Invoice, error) {
-	fmt.Println("generating invoice")
 
 	distance, err := ia.store.Get(id)
 

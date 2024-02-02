@@ -9,6 +9,7 @@ import (
 	"receiver/types"
 
 	"github.com/gorilla/websocket"
+	"github.com/sirupsen/logrus"
 )
 
 type DataReceiver struct {
@@ -72,18 +73,22 @@ func (receiver *DataReceiver) produceData(data types.OBUData) error {
 
 func main() {
 
+	logrus.SetFormatter(&logrus.TextFormatter{
+		DisableColors: true,
+	})
+
 	var kafkaTopic = "obudata"
 
 	producer, err := producer.NewKafkaProducer(kafkaTopic)
 
 	if err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 
 	receiver, err := newDataReceiver(producer)
 
 	if err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 	// defer receiver.producer.Close()
 

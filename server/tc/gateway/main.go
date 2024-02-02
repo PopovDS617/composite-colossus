@@ -11,6 +11,10 @@ import (
 
 func main() {
 
+	logrus.SetFormatter(&logrus.TextFormatter{
+		DisableColors: true,
+	})
+
 	var (
 		listenAdderess = "10000"
 		httpClient     = client.NewHTTPClient("http://localhost:9000")
