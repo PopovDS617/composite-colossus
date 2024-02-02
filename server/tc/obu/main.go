@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"math"
 	"math/rand"
 	"obu/types"
@@ -51,7 +50,7 @@ func main() {
 	wsConn, _, err := websocket.DefaultDialer.Dial(wsEndpoint, nil)
 
 	if err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 
 	obuIDs := generateOBUIDs(15)
@@ -71,7 +70,7 @@ func main() {
 			logrus.Info(data)
 
 			if err := sendOBUData(wsConn, data); err != nil {
-				log.Fatal(err)
+				logrus.Fatal(err)
 			}
 		}
 

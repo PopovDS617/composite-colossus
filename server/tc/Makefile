@@ -19,6 +19,9 @@ gateway:
 	@go build -o bin/gateway ./gateway/main.go
 	@./bin/gateway
 
+prome:
+	docker run --name prometheus -d -p 127.0.0.1:9090:9090 prom/prometheus
+
 runall: gateway dcalc rcvr obu daggr
 
 

@@ -4,7 +4,6 @@ import (
 	"data_aggregator/service"
 	"data_aggregator/types"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 )
@@ -29,7 +28,7 @@ func HandleAggregate(svc service.Aggregator) http.HandlerFunc {
 func HandleGetInvoice(svc service.Aggregator) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println(r)
+
 		if r.Method != "GET" {
 			writeJSON(w, http.StatusMethodNotAllowed, map[string]string{"error": "method not allowed"})
 			return

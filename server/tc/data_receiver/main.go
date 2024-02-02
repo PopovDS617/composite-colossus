@@ -82,13 +82,13 @@ func main() {
 	producer, err := producer.NewKafkaProducer(kafkaTopic)
 
 	if err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 
 	receiver, err := newDataReceiver(producer)
 
 	if err != nil {
-		log.Fatal(err)
+		logrus.Fatal(err)
 	}
 	// defer receiver.producer.Close()
 
