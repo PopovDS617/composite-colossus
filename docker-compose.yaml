@@ -76,7 +76,14 @@ services:
       - ./server/tc/.config/prometheus.yml:/etc/prometheus/prometheus.yml
     extra_hosts:
       - "host.docker.internal:host-gateway"
-
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana-storage:/var/lib/grafana
 #   obu:
 #     build: ./server/tc/obu
 #     container_name: obu_api
@@ -101,5 +108,6 @@ services:
 #       - kafka
 
 volumes:
+  grafana-storage: {}
   data:
   logs:
