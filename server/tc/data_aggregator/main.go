@@ -2,7 +2,6 @@ package main
 
 import (
 	"data_aggregator/handlers"
-	"data_aggregator/middleware"
 	"data_aggregator/pb"
 	"data_aggregator/service"
 	"data_aggregator/store"
@@ -33,8 +32,6 @@ func main() {
 	store := store.NewMemoryStore()
 
 	svc = service.NewInvoiceAggregator(store)
-	svc = middleware.NewLogMiddleware(svc)
-	svc = middleware.NewMetricsMiddleware(svc)
 
 	go makeGRPCTransport(grpcListenAddress, svc)
 	makeHTTPTransport(httpListenAddress, svc)
@@ -42,13 +39,17 @@ func main() {
 }
 
 func makeHTTPTransport(port string, svc service.Aggregator) {
-
-	aggregateMetricHandler := handlers.NewHTTPMetricHandler("aggregate")
-	calculateMetricHandler := handlers.NewHTTPMetricHandler("calculate")
-
 	fmt.Println("http transport running on port", port)
-	http.HandleFunc("/aggregator", aggregateMetricHandler.Instrument(handlers.HandleAggregate(svc)))
-	http.HandleFunc("/invoice", calculateMetricHandler.Instrument(handlers.HandleGetInvoice(svc)))
+
+	var (
+		aggregateMetricHandler = handlers.NewHTTPMetricHandler("aggregate")
+		calculateMetricHandler = handlers.NewHTTPMetricHandler("calculate")
+		aggregateHandler       = handlers.MakeHTTPHandlerFunc(aggregateMetricHandler.Instrument(handlers.HandleAggregate(svc)))
+		invoiceHandler         = handlers.MakeHTTPHandlerFunc(calculateMetricHandler.Instrument(handlers.HandleGetInvoice(svc)))
+	)
+
+	http.HandleFunc("/aggregator", aggregateHandler)
+	http.HandleFunc("/invoice", invoiceHandler)
 	http.Handle("/metrics", promhttp.Handler())
 	http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
 }
