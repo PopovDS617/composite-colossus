@@ -2,6 +2,7 @@ package producer
 
 import (
 	"encoding/json"
+	"os"
 	"receiver/types"
 
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
@@ -17,9 +18,10 @@ type KafkaProducer struct {
 }
 
 func NewKafkaProducer(topic string) (*KafkaProducer, error) {
+	bootstrapServers := os.Getenv("BOOTSTRAP_SERVERS")
+
 	p, err := kafka.NewProducer(&kafka.ConfigMap{
-		// "bootstrap.servers": "kafka:29092",
-		"bootstrap.servers": "localhost",
+		"bootstrap.servers": bootstrapServers,
 	})
 	if err != nil {
 		panic(err)

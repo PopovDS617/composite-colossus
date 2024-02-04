@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"receiver/middleware"
 	"receiver/producer"
 	"receiver/types"
@@ -73,11 +74,14 @@ func (receiver *DataReceiver) produceData(data types.OBUData) error {
 
 func main() {
 
+	var (
+		port       = os.Getenv("PORT")
+		kafkaTopic = "obudata"
+	)
+
 	logrus.SetFormatter(&logrus.TextFormatter{
 		DisableColors: true,
 	})
-
-	var kafkaTopic = "obudata"
 
 	producer, err := producer.NewKafkaProducer(kafkaTopic)
 
@@ -93,7 +97,7 @@ func main() {
 	// defer receiver.producer.Close()
 
 	http.HandleFunc("/ws", receiver.handleWS)
-	http.ListenAndServe(":30000", nil)
+	http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
 
 	// receiver.producer.Flush(15 * 1000)
 

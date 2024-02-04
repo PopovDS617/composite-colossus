@@ -6,6 +6,7 @@ import (
 	"dist_calc/middleware"
 	"dist_calc/service"
 	"log"
+	"os"
 
 	"github.com/sirupsen/logrus"
 )
@@ -17,10 +18,9 @@ func main() {
 	})
 
 	var (
-		kafkaTopic = "obudata"
-		service    = service.NewCalculatorService()
-		// aggregatorEndpoint = "http://data_aggregator:9000/aggregator"
-		aggregatorEndpoint = "http://localhost:9000/aggregator"
+		kafkaTopic         = "obudata"
+		service            = service.NewCalculatorService()
+		aggregatorEndpoint = os.Getenv("AGGREGATOR_ADDRESS")
 	)
 	service = middleware.NewLogMiddleware(service)
 

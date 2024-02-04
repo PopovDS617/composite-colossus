@@ -3,10 +3,10 @@ package client
 import (
 	"bytes"
 	"context"
-	"dist_calc/types"
 	"encoding/json"
 	"fmt"
 	"gateway/pb"
+	"gateway/types"
 	"net/http"
 
 	"github.com/sirupsen/logrus"

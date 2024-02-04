@@ -4,15 +4,12 @@ import (
 	"math"
 	"math/rand"
 	"obu/types"
+	"os"
 	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 )
-
-//const wsEndpoint = "ws://data_receiver:30000/ws"
-
-const wsEndpoint = "ws://localhost:30000/ws"
 
 var updateInterval = time.Second * 3
 
@@ -42,6 +39,7 @@ func generateOBUIDs(n int) []int {
 }
 
 func main() {
+	var wsEndpoint = os.Getenv("WS_RECEIVER_ADDRESS")
 
 	logrus.SetFormatter(&logrus.TextFormatter{
 		DisableColors: true,
