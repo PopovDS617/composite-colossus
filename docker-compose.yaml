@@ -84,28 +84,36 @@ services:
       - '3000:3000'
     volumes:
       - grafana-storage:/var/lib/grafana
-#   obu:
-#     build: ./server/tc/obu
-#     container_name: obu_api
-#     depends_on:
-#       - data_receiver
-#   data_receiver:
-#     build: ./server/tc/data_receiver
-#     container_name: data_receiver_api
-#     ports:
-#       - "30000:30000"
-#     depends_on:
-#       - kafka
-#   distance_calculator:
-#     build: ./server/tc/distance_calculator
-#     container_name: distance_calculator_api
-#     depends_on:
-#       - kafka
-#   data_aggregator:
-#     build: ./server/tc/data_aggregator
-#     container_name: data_aggregator_api
-#     depends_on:
-#       - kafka
+  obu:
+    build: ./server/tc/obu
+    container_name: obu
+    depends_on:
+      - data_receiver
+  data_receiver:
+    build: ./server/tc/data_receiver
+    container_name: data_receiver
+    ports:
+      - "30000:30000"
+    depends_on:
+      - kafka
+  distance_calculator:
+    build: ./server/tc/distance_calculator
+    container_name: distance_calculator
+    depends_on:
+      - kafka
+  data_aggregator:
+    build: ./server/tc/data_aggregator
+    container_name: data_aggregator
+    depends_on:
+      - kafka
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+  gateway:
+    build: ./server/tc/gateway
+    container_name: gateway
+    ports:
+      - "10000:10000"
 
 volumes:
   grafana-storage: {}
