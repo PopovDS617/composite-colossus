@@ -9,9 +9,7 @@ RUN go mod tidy
 
 RUN go build -o main .
 
-EXPOSE 9000
-
-ENV HTTP_PORT="9000" 
-ENV GRPC_PORT="9001"
+ENV PORT="10000"
+ENV AGGREGATOR_ADDRESS="http://data_aggregator:9000"
 
 CMD ["./main"]

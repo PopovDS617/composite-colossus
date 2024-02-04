@@ -7,6 +7,7 @@ import (
 	"dist_calc/service"
 	"dist_calc/types"
 	"encoding/json"
+	"os"
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
@@ -23,9 +24,11 @@ type DataConsumer struct {
 
 func NewDataConsumer(topic string, svc service.Calculator, httpClient *client.HTTPClient, grpcClient *client.GRPCClient) (*DataConsumer, error) {
 
+	bootstrapServers := os.Getenv("BOOTSTRAP_SERVERS")
+
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
-		// "bootstrap.servers": "kafka:29092",
-		"bootstrap.servers": "localhost",
+
+		"bootstrap.servers": bootstrapServers,
 		"group.id":          "myGroup",
 		"auto.offset.reset": "earliest",
 	})

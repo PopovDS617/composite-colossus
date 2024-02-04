@@ -7,6 +7,7 @@ import (
 	"data_aggregator/service"
 	"data_aggregator/store"
 	"data_aggregator/transport"
+	"os"
 
 	"fmt"
 	"net"
@@ -19,15 +20,16 @@ import (
 
 func main() {
 
+	var (
+		httpListenAddress = os.Getenv("HTTP_PORT")
+		grpcListenAddress = os.Getenv("GRPC_PORT")
+	)
+
 	logrus.SetFormatter(&logrus.TextFormatter{
 		DisableColors: true,
 	})
 
 	var svc service.Aggregator
-
-	httpListenAddress := ":9000"
-	grpcListenAddress := ":9001"
-
 	store := store.NewMemoryStore()
 
 	svc = service.NewInvoiceAggregator(store)
@@ -40,17 +42,21 @@ func main() {
 }
 
 func makeHTTPTransport(port string, svc service.Aggregator) {
+
+	aggregateMetricHandler := handlers.NewHTTPMetricHandler("aggregate")
+	calculateMetricHandler := handlers.NewHTTPMetricHandler("calculate")
+
 	fmt.Println("http transport running on port", port)
-	http.HandleFunc("/aggregator", handlers.HandleAggregate(svc))
-	http.HandleFunc("/invoice", handlers.HandleGetInvoice(svc))
+	http.HandleFunc("/aggregator", aggregateMetricHandler.Instrument(handlers.HandleAggregate(svc)))
+	http.HandleFunc("/invoice", calculateMetricHandler.Instrument(handlers.HandleGetInvoice(svc)))
 	http.Handle("/metrics", promhttp.Handler())
-	http.ListenAndServe(port, nil)
+	http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
 }
 
 func makeGRPCTransport(listenAddr string, svc service.Aggregator) error {
 	fmt.Println("GRPC transport running on port", listenAddr)
 
-	ln, err := net.Listen("tcp", listenAddr)
+	ln, err := net.Listen("tcp", fmt.Sprintf(":%s", listenAddr))
 	if err != nil {
 		return err
 	}

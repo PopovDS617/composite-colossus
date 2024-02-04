@@ -14,8 +14,12 @@ ENV GOFLAGS -mod=readonly
 ENV GOOS=linux
 ENV GOARCH=amd64
 
+
 RUN export GO111MODULE=on
 
 RUN go build -tags musl -o main .
+
+ENV BOOTSTRAP_SERVERS="kafka:29092" 
+ENV PORT="30000"
 
 CMD ["./main"]
