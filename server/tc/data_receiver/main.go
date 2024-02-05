@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
+	"math/rand"
 	"net/http"
 	"os"
 	"receiver/middleware"
@@ -42,10 +44,12 @@ func (receiver *DataReceiver) handleReceiveWS() {
 	fmt.Println("--- new obu connected")
 	for {
 		var data types.OBUData
+
 		if err := receiver.wsConn.ReadJSON(&data); err != nil {
 			log.Println("read error", err)
 			continue
 		}
+		data.RequestID = rand.Intn(math.MaxInt)
 		// fmt.Printf("received OBU data from [%d] :: lat %.2f | long %.2f\n", data.OBUID, data.Lat, data.Long)
 		// receiver.msgCh <- data
 		err := receiver.produceData(data)

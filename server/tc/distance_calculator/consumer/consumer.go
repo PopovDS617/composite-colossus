@@ -53,6 +53,10 @@ func (c *DataConsumer) Start() {
 	c.readMessageLoop()
 }
 
+func (c *DataConsumer) Close() {
+	c.isUp = false
+}
+
 func (c *DataConsumer) readMessageLoop() {
 	for c.isUp {
 		msg, err := c.consumer.ReadMessage(-1)
@@ -64,6 +68,10 @@ func (c *DataConsumer) readMessageLoop() {
 			var data types.OBUData
 			if err := json.Unmarshal(msg.Value, &data); err != nil {
 				logrus.Errorf("JSON serialization error: %s", err)
+				logrus.WithFields(logrus.Fields{
+					"err":        err,
+					"request_id": data.RequestID,
+				})
 
 			}
 			distance, err := c.service.CalculateDistance(data)
@@ -81,7 +89,7 @@ func (c *DataConsumer) readMessageLoop() {
 				logrus.Error("aggregate error:", err)
 			}
 
-			grpcReq := &pb.AggregateRequest{OBUID: int32(data.OBUID), Value: distance, Unix: time.Now().Unix()}
+			grpcReq := &pb.AggregateRequest{OBUID: int32(data.OBUID), Value: distance, Unix: time.Now().Unix(), RequestID: int64(data.RequestID)}
 
 			if _, err := c.grpcClient.AggregateDistance(context.Background(), grpcReq); err != nil {
 				logrus.Error("aggregate error:", err)
