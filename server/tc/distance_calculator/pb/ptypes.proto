@@ -12,4 +12,5 @@ message AggregateRequest {
     int32 OBUID = 1;
     double Value = 2;
     int64 Unix = 3;
+    int64 RequestID=4;
 };
