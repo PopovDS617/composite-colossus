@@ -1,72 +1,49 @@
 package main
 
 import (
-	"data_aggregator/handlers"
-	"data_aggregator/pb"
 	"data_aggregator/service"
+	endpoint "data_aggregator/service/aggregate-endpoint"
 	"data_aggregator/store"
 	"data_aggregator/transport"
+	"fmt"
 	"os"
 
-	"fmt"
 	"net"
 	"net/http"
 
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/go-kit/log"
 	"github.com/sirupsen/logrus"
-	"google.golang.org/grpc"
 )
 
 func main() {
 
 	var (
 		httpListenAddress = os.Getenv("HTTP_PORT")
-		grpcListenAddress = os.Getenv("GRPC_PORT")
+		// grpcListenAddress = os.Getenv("GRPC_PORT")
 	)
 
 	logrus.SetFormatter(&logrus.TextFormatter{
 		DisableColors: true,
 	})
 
-	var svc service.Aggregator
+	logger := log.NewLogfmtLogger(os.Stderr)
+	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
+	logger = log.With(logger, "caller", log.DefaultCaller)
+
 	store := store.NewMemoryStore()
 
-	svc = service.NewInvoiceAggregator(store)
+	service := service.NewAggregatorService(store)
+	endpoints := endpoint.New(service, logger)
+	httpHandler := transport.NewHTTPHandler(endpoints, logger)
 
-	go makeGRPCTransport(grpcListenAddress, svc)
-	makeHTTPTransport(httpListenAddress, svc)
-
-}
-
-func makeHTTPTransport(port string, svc service.Aggregator) {
-	fmt.Println("http transport running on port", port)
-
-	var (
-		aggregateMetricHandler = handlers.NewHTTPMetricHandler("aggregate")
-		calculateMetricHandler = handlers.NewHTTPMetricHandler("calculate")
-		aggregateHandler       = handlers.MakeHTTPHandlerFunc(aggregateMetricHandler.Instrument(handlers.HandleAggregate(svc)))
-		invoiceHandler         = handlers.MakeHTTPHandlerFunc(calculateMetricHandler.Instrument(handlers.HandleGetInvoice(svc)))
-	)
-
-	http.HandleFunc("/aggregator", aggregateHandler)
-	http.HandleFunc("/invoice", invoiceHandler)
-	http.Handle("/metrics", promhttp.Handler())
-	http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
-}
-
-func makeGRPCTransport(listenAddr string, svc service.Aggregator) error {
-	fmt.Println("GRPC transport running on port", listenAddr)
-
-	ln, err := net.Listen("tcp", fmt.Sprintf(":%s", listenAddr))
+	httpListener, err := net.Listen("tcp", fmt.Sprintf(":%s", httpListenAddress))
 	if err != nil {
-		return err
+		logger.Log("transport", "HTTP", "during", "Listen", "err", err)
+		os.Exit(1)
 	}
-	defer func() {
-		fmt.Println("stopping GRPC transport")
-		ln.Close()
-	}()
-	server := grpc.NewServer([]grpc.ServerOption{}...)
-
-	pb.RegisterAggregatorServer(server, transport.NewGRPCAggregatorServer(svc))
-	return server.Serve(ln)
+	logger.Log("transport", "HTTP", "addr", fmt.Sprintf(":%s", httpListenAddress))
+	err = http.Serve(httpListener, httpHandler)
+	if err != nil {
+		panic(err)
+	}
 }

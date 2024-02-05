@@ -1,48 +1,51 @@
 package service
 
 import (
+	"context"
+
+	"data_aggregator/store"
 	"data_aggregator/types"
 )
 
 const price = 1.216
 
-type Aggregator interface {
-	AggregateDistance(types.Distance) error
-	GenerateInvoice(int) (*types.Invoice, error)
+type Service interface {
+	Aggregate(context.Context, types.Distance) error
+	Calculate(context.Context, int) (*types.Invoice, error)
 }
 
-type Storer interface {
-	Put(types.Distance) error
-	Get(int) (float64, error)
+type BasicService struct {
+	store store.Storer
 }
 
-type InvoiceAggregator struct {
-	store Storer
+func newBasicService(store store.Storer) Service {
+	return &BasicService{
+		store}
 }
 
-func NewInvoiceAggregator(store Storer) *InvoiceAggregator {
-	return &InvoiceAggregator{
-		store: store,
-	}
+func (svc *BasicService) Aggregate(_ context.Context, distance types.Distance) error {
+	return svc.store.Put(distance)
 }
-
-func (ia *InvoiceAggregator) AggregateDistance(data types.Distance) error {
-
-	return ia.store.Put(data)
-}
-
-func (ia *InvoiceAggregator) GenerateInvoice(id int) (*types.Invoice, error) {
-
-	distance, err := ia.store.Get(id)
+func (svc *BasicService) Calculate(_ context.Context, obuID int) (*types.Invoice, error) {
+	distance, err := svc.store.Get(obuID)
 
 	if err != nil {
 		return nil, err
 	}
 
 	inv := &types.Invoice{
-		OBUID:         id,
+		OBUID:         obuID,
 		TotalDistance: distance,
 		TotalAmount:   distance * price,
 	}
 	return inv, nil
+}
+
+func NewAggregatorService(store store.Storer) Service {
+	var svc Service
+	svc = newBasicService(store)
+	svc = NewLoggingMiddleware()(svc)
+	svc = NewInstrumentationMiddleware()(svc)
+
+	return svc
 }

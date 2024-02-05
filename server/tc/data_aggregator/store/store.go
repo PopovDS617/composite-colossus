@@ -5,6 +5,11 @@ import (
 	"fmt"
 )
 
+type Storer interface {
+	Put(types.Distance) error
+	Get(int) (float64, error)
+}
+
 type MemoryStore struct {
 	data map[int]float64
 }
