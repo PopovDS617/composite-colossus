@@ -5,6 +5,8 @@ import (
 
 	"data_aggregator/store"
 	"data_aggregator/types"
+
+	"github.com/go-kit/log"
 )
 
 const price = 1.216
@@ -24,9 +26,11 @@ func newBasicService(store store.Storer) Service {
 }
 
 func (svc *BasicService) Aggregate(_ context.Context, distance types.Distance) error {
+
 	return svc.store.Put(distance)
 }
 func (svc *BasicService) Calculate(_ context.Context, obuID int) (*types.Invoice, error) {
+
 	distance, err := svc.store.Get(obuID)
 
 	if err != nil {
@@ -38,14 +42,16 @@ func (svc *BasicService) Calculate(_ context.Context, obuID int) (*types.Invoice
 		TotalDistance: distance,
 		TotalAmount:   distance * price,
 	}
+
 	return inv, nil
 }
 
-func NewAggregatorService(store store.Storer) Service {
+func New(store store.Storer, logger log.Logger) Service {
 	var svc Service
-	svc = newBasicService(store)
-	svc = NewLoggingMiddleware()(svc)
-	svc = NewInstrumentationMiddleware()(svc)
-
+	{
+		svc = newBasicService(store)
+		svc = newLoggingMiddleware(logger)(svc)
+		svc = newInstrumentationMiddleware()(svc)
+	}
 	return svc
 }

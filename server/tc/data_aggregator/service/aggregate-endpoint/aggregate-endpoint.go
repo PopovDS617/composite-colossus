@@ -5,12 +5,16 @@ import (
 	"data_aggregator/service"
 	"data_aggregator/types"
 
+	"github.com/go-kit/kit/circuitbreaker"
 	"github.com/go-kit/kit/endpoint"
+	"github.com/go-kit/kit/metrics/prometheus"
 	"github.com/go-kit/log"
+	stdprometheus "github.com/prometheus/client_golang/prometheus"
+	"github.com/sony/gobreaker"
 )
 
 type Set struct {
-	AggregateEndoint  endpoint.Endpoint
+	AggregateEndpoint endpoint.Endpoint
 	CalculateEndpoint endpoint.Endpoint
 }
 
@@ -36,7 +40,7 @@ type CalculateResponse struct {
 }
 
 func (s Set) Aggregate(ctx context.Context, distance types.Distance) error {
-	_, err := s.AggregateEndoint(ctx, AggregateRequest{
+	_, err := s.AggregateEndpoint(ctx, AggregateRequest{
 		OBUID: distance.OBUID,
 		Value: distance.Value,
 		Unix:  distance.Unix})
@@ -45,7 +49,7 @@ func (s Set) Aggregate(ctx context.Context, distance types.Distance) error {
 }
 
 func (s Set) Calculate(ctx context.Context, obuID int) (*types.Invoice, error) {
-	res, err := s.AggregateEndoint(ctx, CalculateRequest{
+	res, err := s.AggregateEndpoint(ctx, CalculateRequest{
 		OBUID: obuID})
 
 	if err != nil {
@@ -63,11 +67,33 @@ func (s Set) Calculate(ctx context.Context, obuID int) (*types.Invoice, error) {
 
 func New(svc service.Service, logger log.Logger) Set {
 
-	aggregateEndpoint := makeAggregateEndpoint(svc)
-	calculateEndpoint := makeCalculateEndpoint(svc)
+	duration := prometheus.NewSummaryFrom(stdprometheus.SummaryOpts{
+		Namespace: "toll_calculator",
+		Subsystem: "aggservice",
+		Name:      "request_duration_seconds",
+		Help:      "Request duration in seconds.",
+	}, []string{"method", "success"})
 
+	var aggregateEndpoint endpoint.Endpoint
+	{
+		aggregateEndpoint = makeAggregateEndpoint(svc)
+
+		// aggregateEndpoint = ratelimit.NewErroringLimiter(rate.NewLimiter(rate.Every(time.Second*5), 3))(aggregateEndpoint)
+		aggregateEndpoint = circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{}))(aggregateEndpoint)
+		aggregateEndpoint = LoggingMiddleware(log.With(logger, "method", "Aggregate"))(aggregateEndpoint)
+		aggregateEndpoint = InstrumentingMiddleware(duration.With("method", "Aggregate"))(aggregateEndpoint)
+	}
+	var calculateEndpoint endpoint.Endpoint
+	{
+		calculateEndpoint = makeCalculateEndpoint(svc)
+
+		// calculateEndpoint = ratelimit.NewErroringLimiter(rate.NewLimiter(rate.Limit(3), 100))(calculateEndpoint)
+		calculateEndpoint = circuitbreaker.Gobreaker(gobreaker.NewCircuitBreaker(gobreaker.Settings{}))(calculateEndpoint)
+		calculateEndpoint = LoggingMiddleware(log.With(logger, "method", "Invoice"))(calculateEndpoint)
+		calculateEndpoint = InstrumentingMiddleware(duration.With("method", "Invoice"))(calculateEndpoint)
+	}
 	return Set{
-		AggregateEndoint:  aggregateEndpoint,
+		AggregateEndpoint: aggregateEndpoint,
 		CalculateEndpoint: calculateEndpoint,
 	}
 }
@@ -94,10 +120,16 @@ func makeCalculateEndpoint(s service.Service) endpoint.Endpoint {
 
 		inv, err := s.Calculate(ctx, req.OBUID)
 
+		if err != nil {
+
+			return nil, err
+		}
+
 		return CalculateResponse{
 			OBUID:         req.OBUID,
 			TotalDistance: inv.TotalDistance,
 			TotalAmount:   inv.TotalAmount,
 			Err:           err}, nil
 	}
+
 }

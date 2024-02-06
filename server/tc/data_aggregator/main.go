@@ -32,7 +32,7 @@ func main() {
 
 	store := store.NewMemoryStore()
 
-	service := service.NewAggregatorService(store)
+	service := service.New(store, logger)
 	endpoints := endpoint.New(service, logger)
 	httpHandler := transport.NewHTTPHandler(endpoints, logger)
 
