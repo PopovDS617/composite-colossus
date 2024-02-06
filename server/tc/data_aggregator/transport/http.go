@@ -37,8 +37,8 @@ func NewHTTPHandler(endpoints aggendpoint.Set, logger log.Logger) http.Handler {
 	}
 
 	m := http.NewServeMux()
-	m.Handle("/aggregate", httptransport.NewServer(
-		endpoints.AggregateEndoint,
+	m.Handle("/aggregator", httptransport.NewServer(
+		endpoints.AggregateEndpoint,
 		decodeHTTPAggregateRequest,
 		encodeHTTPGenericResponse,
 		options...,
@@ -56,8 +56,6 @@ func NewHTTPHandler(endpoints aggendpoint.Set, logger log.Logger) http.Handler {
 func decodeHTTPAggregateRequest(_ context.Context, r *http.Request) (interface{}, error) {
 
 	var req aggendpoint.AggregateRequest
-
-	fmt.Println(req)
 
 	err := json.NewDecoder(r.Body).Decode(&req)
 
@@ -126,7 +124,7 @@ func NewHTTPClient(instance string, logger log.Logger) (service.Service, error) 
 
 	aggregateEndpoint = httptransport.NewClient(
 		"POST",
-		copyURL(u, "/aggregate"),
+		copyURL(u, "/aggregator"),
 		encodeHTTPGenericRequest,
 		decodeHTTPAggregateResponse,
 	).Endpoint()
@@ -149,7 +147,7 @@ func NewHTTPClient(instance string, logger log.Logger) (service.Service, error) 
 	}))(calculateEndpoint)
 
 	return aggendpoint.Set{
-		AggregateEndoint:  aggregateEndpoint,
+		AggregateEndpoint: aggregateEndpoint,
 		CalculateEndpoint: calculateEndpoint,
 	}, nil
 
