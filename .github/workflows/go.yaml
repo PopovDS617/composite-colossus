@@ -19,7 +19,7 @@ jobs:
           cache-dependency-path: go.sum
 
       - name: Build
-        run: go build -o ./bin/ -v ./...
+        run: go build -o ./server/lbt/ms_1/bin/ -v ./server/lbt/ms_1/
 
       - name: Test
         run: go test -v ./...
