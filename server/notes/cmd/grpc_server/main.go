@@ -33,7 +33,7 @@ type server struct {
 }
 
 func (s *server) Create(ctx context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
-	// Делаем запрос на вставку записи в таблицу note
+
 	builderInsert := sq.Insert("note").
 		PlaceholderFormat(sq.Dollar).
 		Columns("title", "body").
@@ -59,7 +59,6 @@ func (s *server) Create(ctx context.Context, req *desc.CreateRequest) (*desc.Cre
 }
 
 func (s *server) Get(ctx context.Context, req *desc.GetRequest) (*desc.GetResponse, error) {
-	// Делаем запрос на получение измененной записи из таблицы note
 	builderSelectOne := sq.Select("id", "title", "body", "created_at", "updated_at").
 		From("note").
 		PlaceholderFormat(sq.Dollar).
@@ -102,7 +101,6 @@ func main() {
 	flag.Parse()
 	ctx := context.Background()
 
-	// Считываем переменные окружения
 	err := config.Load(configPath)
 	if err != nil {
 		log.Fatalf("failed to load config: %v", err)
@@ -123,7 +121,6 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	// Создаем пул соединений с базой данных
 	pool, err := pgxpool.Connect(ctx, pgConfig.DSN())
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
