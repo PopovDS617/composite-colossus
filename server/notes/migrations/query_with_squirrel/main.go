@@ -18,14 +18,12 @@ const (
 func main() {
 	ctx := context.Background()
 
-	// Создаем пул соединений с базой данных
 	pool, err := pgxpool.Connect(ctx, dbDSN)
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
 	defer pool.Close()
 
-	// Делаем запрос на вставку записи в таблицу note
 	builderInsert := sq.Insert("note").
 		PlaceholderFormat(sq.Dollar).
 		Columns("title", "body").
@@ -45,7 +43,6 @@ func main() {
 
 	log.Printf("inserted note with id: %d", noteID)
 
-	// Делаем запрос на выборку записей из таблицы note
 	builderSelect := sq.Select("id", "title", "body", "created_at", "updated_at").
 		From("note").
 		PlaceholderFormat(sq.Dollar).
@@ -76,7 +73,6 @@ func main() {
 		log.Printf("id: %d, title: %s, body: %s, created_at: %v, updated_at: %v\n", id, title, body, createdAt, updatedAt)
 	}
 
-	// Делаем запрос на обновление записи в таблице note
 	builderUpdate := sq.Update("note").
 		PlaceholderFormat(sq.Dollar).
 		Set("title", gofakeit.City()).
@@ -96,7 +92,6 @@ func main() {
 
 	log.Printf("updated %d rows", res.RowsAffected())
 
-	// Делаем запрос на получение измененной записи из таблицы note
 	builderSelectOne := sq.Select("id", "title", "body", "created_at", "updated_at").
 		From("note").
 		PlaceholderFormat(sq.Dollar).
