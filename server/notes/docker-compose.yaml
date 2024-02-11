@@ -45,3 +45,10 @@ services:
       dockerfile: grpc_server.Dockerfile
     ports:
       - "8080:8080"
+  pg-admin:
+    image: dpage/pgadmin4
+    restart: always
+    env_file:
+      - "local.env"
+    ports:
+      - "82:80"
