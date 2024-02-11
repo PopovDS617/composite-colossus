@@ -16,7 +16,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"notes/internal/config"
-	"notes/internal/config/env"
+
 	desc "notes/pkg/note_v1"
 )
 
@@ -106,12 +106,12 @@ func main() {
 		log.Fatalf("failed to load config: %v", err)
 	}
 
-	grpcConfig, err := env.NewGRPCConfig()
+	grpcConfig, err := config.NewGRPCConfig()
 	if err != nil {
 		log.Fatalf("failed to get grpc config: %v", err)
 	}
 
-	pgConfig, err := env.NewPGConfig()
+	pgConfig, err := config.NewPGConfig()
 	if err != nil {
 		log.Fatalf("failed to get pg config: %v", err)
 	}

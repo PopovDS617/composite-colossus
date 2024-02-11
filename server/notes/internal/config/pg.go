@@ -1,10 +1,8 @@
-package env
+package config
 
 import (
 	"errors"
 	"os"
-
-	"notes/internal/config"
 )
 
 const (
@@ -15,7 +13,7 @@ type pgConfig struct {
 	dsn string
 }
 
-func NewPGConfig() (config.PGConfig, error) {
+func NewPGConfig() (PGConfig, error) {
 	dsn := os.Getenv(dsnEnvName)
 	if len(dsn) == 0 {
 		return nil, errors.New("pg dsn not found")
