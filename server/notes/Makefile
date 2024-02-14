@@ -15,6 +15,7 @@ get-deps:
 
 minimock:
 	$(LOCAL_BIN)/minimock  -i notes/internal/repository.NoteRepository -o internal/repository/mocks
+	$(LOCAL_BIN)/minimock  -i notes/internal/service.NoteService -o internal/service/mocks
 
 generate:
 	make generate-note-api
@@ -36,3 +37,16 @@ local-migration-up:
 
 local-migration-down:
 	goose -dir ${LOCAL_MIGRATION_DIR} postgres ${LOCAL_MIGRATION_DSN} down -v
+
+test:
+	go clean -testcache
+	go test ./... -covermode count -coverpkg=notes/internal/service/...,notes/internal/api/... -count 5
+
+test-coverage:
+	go clean -testcache
+	go test ./... -coverprofile=coverage.tmp.out -covermode count -coverpkg=notes/internal/service/...,notes/internal/api/... -count 5
+	grep -v 'mocks\|config' coverage.tmp.out  > coverage.out
+	rm coverage.tmp.out
+	go tool cover -html=coverage.out;
+	go tool cover -func=./coverage.out | grep "total";
+	
