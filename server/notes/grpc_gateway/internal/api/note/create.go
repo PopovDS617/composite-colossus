@@ -9,7 +9,8 @@ import (
 )
 
 func (i *Implementation) Create(ctx context.Context, req *desc.CreateRequest) (*desc.CreateResponse, error) {
-	id, err := i.gatewayervice.Create(ctx, converter.ToNoteInfoFromDesc(req.GetInfo()))
+
+	id, err := i.NoteService.Create(ctx, converter.ToNoteInfoFromDesc(req.Info))
 	if err != nil {
 		return nil, err
 	}

@@ -2,6 +2,7 @@ package note
 
 import (
 	"context"
+	"fmt"
 
 	sq "github.com/Masterminds/squirrel"
 
@@ -50,6 +51,7 @@ func (r *repo) Create(ctx context.Context, info *model.NoteInfo) (int64, error) 
 	var id int64
 	err = r.db.DB().QueryRowContext(ctx, q, args...).Scan(&id)
 	if err != nil {
+		fmt.Println("here is error", err)
 		return 0, err
 	}
 

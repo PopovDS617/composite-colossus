@@ -9,7 +9,6 @@ import (
 	"sync"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-
 	"github.com/rakyll/statik/fs"
 
 	"github.com/rs/cors"
@@ -21,6 +20,7 @@ import (
 	"gateway/internal/config"
 	"gateway/internal/interceptor"
 	desc "gateway/pkg/note_v1"
+	_ "gateway/statik"
 )
 
 type App struct {
@@ -48,7 +48,7 @@ func (a *App) Run() error {
 	}()
 
 	wg := sync.WaitGroup{}
-	wg.Add(3)
+	wg.Add(2)
 
 	go func() {
 		defer wg.Done()

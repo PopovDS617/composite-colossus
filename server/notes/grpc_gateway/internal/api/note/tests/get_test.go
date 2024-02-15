@@ -20,7 +20,7 @@ import (
 
 func TestGet(t *testing.T) {
 	t.Parallel()
-	type gatewayerviceMockFunc func(mc *minimock.Controller) service.NoteService
+	type noteserviceMockFunc func(mc *minimock.Controller) service.NoteService
 
 	type args struct {
 		ctx context.Context
@@ -70,11 +70,11 @@ func TestGet(t *testing.T) {
 	)
 
 	tests := []struct {
-		name              string
-		args              args
-		want              *desc.GetResponse
-		err               error
-		gatewayerviceMock gatewayerviceMockFunc
+		name            string
+		args            args
+		want            *desc.GetResponse
+		err             error
+		noteserviceMock noteserviceMockFunc
 	}{
 		{
 			name: "success case",
@@ -84,8 +84,8 @@ func TestGet(t *testing.T) {
 			},
 			want: res,
 			err:  nil,
-			gatewayerviceMock: func(mc *minimock.Controller) service.NoteService {
-				mock := serviceMocks.NewgatewayerviceMock(mc)
+			noteserviceMock: func(mc *minimock.Controller) service.NoteService {
+				mock := serviceMocks.NewNoteServiceMock(mc)
 				mock.GetMock.Expect(ctx, id).Return(serviceRes, nil)
 				return mock
 			},
@@ -98,8 +98,8 @@ func TestGet(t *testing.T) {
 			},
 			want: nil,
 			err:  serviceErr,
-			gatewayerviceMock: func(mc *minimock.Controller) service.NoteService {
-				mock := serviceMocks.NewgatewayerviceMock(mc)
+			noteserviceMock: func(mc *minimock.Controller) service.NoteService {
+				mock := serviceMocks.NewNoteServiceMock(mc)
 				mock.GetMock.Expect(ctx, id).Return(nil, serviceErr)
 				return mock
 			},
@@ -111,8 +111,8 @@ func TestGet(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			gatewayerviceMock := tt.gatewayerviceMock(mc)
-			api := note.NewImplementation(gatewayerviceMock)
+			noteserviceMock := tt.noteserviceMock(mc)
+			api := note.NewImplementation(noteserviceMock)
 
 			newID, err := api.Get(tt.args.ctx, tt.args.req)
 			require.Equal(t, tt.err, err)
