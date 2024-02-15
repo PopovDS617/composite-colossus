@@ -9,7 +9,7 @@ import (
 )
 
 func (i *Implementation) Get(ctx context.Context, req *desc.GetRequest) (*desc.GetResponse, error) {
-	noteObj, err := i.gatewayervice.Get(ctx, req.GetId())
+	noteObj, err := i.NoteService.Get(ctx, req.GetId())
 	if err != nil {
 		return nil, err
 	}

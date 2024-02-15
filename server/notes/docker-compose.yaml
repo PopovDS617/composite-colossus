@@ -17,7 +17,7 @@ services:
   pg-prod:
     image: postgres:14-alpine3.17
     env_file:
-      - /grpc_server/prod.env
+      - "./grpc_server/prod.env"
     ports:
       - "54322:5432"
     volumes:
@@ -26,7 +26,7 @@ services:
   migrator-local:
     build:
       context: .
-      dockerfile: migration_local.Dockerfile
+      dockerfile: ./grpc_server/migration_local.Dockerfile
     restart: on-failure
     environment:
       DB_HOST: pg-local
@@ -49,7 +49,7 @@ services:
     image: dpage/pgadmin4
     restart: always
     env_file:
-      - "local.env"
+      - "./grpc_server/local.env"
     ports:
       - "82:80"
   grpc-gateway:

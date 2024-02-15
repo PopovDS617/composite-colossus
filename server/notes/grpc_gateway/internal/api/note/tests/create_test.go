@@ -17,7 +17,7 @@ import (
 
 func TestCreate(t *testing.T) {
 
-	type gatewayerviceMockFunc func(mc *minimock.Controller) service.NoteService
+	type noteserviceMockFunc func(mc *minimock.Controller) service.NoteService
 
 	type args struct {
 		ctx context.Context
@@ -52,11 +52,11 @@ func TestCreate(t *testing.T) {
 	)
 
 	tests := []struct {
-		name              string
-		args              args
-		want              *desc.CreateResponse
-		err               error
-		gatewayerviceMock gatewayerviceMockFunc
+		name            string
+		args            args
+		want            *desc.CreateResponse
+		err             error
+		noteserviceMock noteserviceMockFunc
 	}{
 		{
 			name: "success case",
@@ -66,8 +66,8 @@ func TestCreate(t *testing.T) {
 			},
 			want: res,
 			err:  nil,
-			gatewayerviceMock: func(mc *minimock.Controller) service.NoteService {
-				mock := serviceMocks.NewgatewayerviceMock(mc)
+			noteserviceMock: func(mc *minimock.Controller) service.NoteService {
+				mock := serviceMocks.NewNoteServiceMock(mc)
 				mock.CreateMock.Expect(ctx, info).Return(id, nil)
 				return mock
 			},
@@ -80,8 +80,8 @@ func TestCreate(t *testing.T) {
 			},
 			want: nil,
 			err:  serviceErr,
-			gatewayerviceMock: func(mc *minimock.Controller) service.NoteService {
-				mock := serviceMocks.NewgatewayerviceMock(mc)
+			noteserviceMock: func(mc *minimock.Controller) service.NoteService {
+				mock := serviceMocks.NewNoteServiceMock(mc)
 				mock.CreateMock.Expect(ctx, info).Return(0, serviceErr)
 				return mock
 			},
@@ -93,8 +93,8 @@ func TestCreate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			gatewayerviceMock := tt.gatewayerviceMock(mc)
-			api := note.NewImplementation(gatewayerviceMock)
+			noteserviceMock := tt.noteserviceMock(mc)
+			api := note.NewImplementation(noteserviceMock)
 
 			res, err := api.Create(tt.args.ctx, tt.args.req)
 			require.Equal(t, tt.err, err)

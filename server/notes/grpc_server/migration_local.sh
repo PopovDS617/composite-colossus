@@ -1,4 +1,4 @@
 #!/bin/bash
 source local.env
 
-sleep 2 && goose -dir "${MIGRATION_DIR}" postgres "${MIGRATION_DSN}" up -v
+sleep 2 && ./bin/goose -dir "${MIGRATION_DIR}" postgres "${MIGRATION_DSN}" up -v

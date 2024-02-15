@@ -13,3 +13,6 @@ go.work.sum
 
 # coverage
 coverage.out
+
+#vendor
+vendor.protogen
