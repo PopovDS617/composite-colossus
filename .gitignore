@@ -16,3 +16,6 @@ coverage.out
 
 #vendor
 vendor.protogen
+
+#logs
+**/logs/*.log
