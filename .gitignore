@@ -1,5 +1,6 @@
 # ide
-*/.vscode/*
+.vscode
+.idea
 
 # env
 .env
@@ -16,6 +17,7 @@ coverage.out
 
 #vendor
 vendor.protogen
+vendor
 
 #logs
 **/logs/*.log
