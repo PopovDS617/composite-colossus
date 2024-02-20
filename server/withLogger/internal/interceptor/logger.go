@@ -7,7 +7,7 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
-	"withlogsgrpc_with_logs/internal/logger"
+	"withlogger/internal/logger"
 )
 
 func LogInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {

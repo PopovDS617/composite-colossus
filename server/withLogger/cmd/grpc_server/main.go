@@ -17,9 +17,9 @@ import (
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"withlogsgrpc_with_logs/internal/interceptor"
-	"withlogsgrpc_with_logs/internal/logger"
-	desc "withlogsgrpc_with_logs/pkg/note_v1"
+	"withlogger/internal/interceptor"
+	"withlogger/internal/logger"
+	desc "withlogger/pkg/note_v1"
 )
 
 var logLevel = flag.String("l", "info", "log level")
