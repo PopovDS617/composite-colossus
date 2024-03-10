@@ -23,7 +23,7 @@ type Mail struct {
 	Wait        *sync.WaitGroup
 	MailerChan  chan Message
 	ErrorChan   chan error
-	Done        chan bool
+	DoneChan    chan bool
 }
 
 type Message struct {
@@ -38,6 +38,8 @@ type Message struct {
 }
 
 func (m *Mail) sendMail(msg Message, errorChan chan error) {
+	defer m.Wait.Done()
+
 	if msg.Template == "" {
 		msg.Template = "mail"
 	}
@@ -66,7 +68,6 @@ func (m *Mail) sendMail(msg Message, errorChan chan error) {
 	if err != nil {
 		errorChan <- err
 	}
-	fmt.Println("messages created")
 
 	server := mail.NewSMTPClient()
 	server.Host = m.Host
@@ -79,8 +80,6 @@ func (m *Mail) sendMail(msg Message, errorChan chan error) {
 	server.SendTimeout = 10 * time.Second
 
 	smtpClient, err := server.Connect()
-
-	fmt.Println("client", smtpClient)
 
 	if err != nil {
 		errorChan <- err
@@ -98,8 +97,6 @@ func (m *Mail) sendMail(msg Message, errorChan chan error) {
 		}
 	}
 	err = email.Send(smtpClient)
-
-	fmt.Println("here")
 
 	if err != nil {
 		errorChan <- err
@@ -179,4 +176,17 @@ func (m *Mail) inlineCSS(s string) (string, error) {
 
 	return html, nil
 
+}
+
+func (app *Config) listenForMail() {
+	for {
+		select {
+		case msg := <-app.Mailer.MailerChan:
+			go app.Mailer.sendMail(msg, app.Mailer.ErrorChan)
+		case err := <-app.Mailer.ErrorChan:
+			app.ErrorLog.Println(err)
+		case <-app.Mailer.DoneChan:
+			return
+		}
+	}
 }
