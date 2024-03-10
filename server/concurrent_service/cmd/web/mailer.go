@@ -57,16 +57,16 @@ func (m *Mail) sendMail(msg Message, errorChan chan error) {
 
 	msg.DataMap = data
 
-	formattedMessage, err := m.BuildHTMLMessage(msg)
+	formattedMessage, err := m.buildHTMLMessage(msg)
 
 	if err != nil {
 		errorChan <- err
 	}
-	fmt.Println("messages created")
-	plainMessage, err := m.BuildPlainTextMessage(msg)
+	plainMessage, err := m.buildPlainTextMessage(msg)
 	if err != nil {
 		errorChan <- err
 	}
+	fmt.Println("messages created")
 
 	server := mail.NewSMTPClient()
 	server.Host = m.Host
@@ -106,50 +106,39 @@ func (m *Mail) sendMail(msg Message, errorChan chan error) {
 	}
 
 }
+func (m *Mail) buildHTMLMessage(msg Message) (string, error) {
+	templateToRender := fmt.Sprintf("./cmd/web/templates/%s.html.gohtml", msg.Template)
 
-func (m *Mail) BuildHTMLMessage(msg Message) (string, error) {
-	templateToRender := fmt.Sprintf("./cmd/web/templates/%s/html.gohtml", msg.Template)
-
-	t, err := template.New("email-html").Parse(templateToRender)
-
+	t, err := template.New("email-html").ParseFiles(templateToRender)
 	if err != nil {
 		return "", err
 	}
 
 	var tpl bytes.Buffer
-
 	if err = t.ExecuteTemplate(&tpl, "body", msg.DataMap); err != nil {
 		return "", err
 	}
-	fmt.Println("messages created")
 
 	formattedMessage := tpl.String()
 	formattedMessage, err = m.inlineCSS(formattedMessage)
-
 	if err != nil {
 		return "", err
 	}
-
-	fmt.Println("formatted message is", formattedMessage)
 
 	return formattedMessage, nil
 }
 
-func (m *Mail) BuildPlainTextMessage(msg Message) (string, error) {
+func (m *Mail) buildPlainTextMessage(msg Message) (string, error) {
+	templateToRender := fmt.Sprintf("./cmd/web/templates/%s.plain.gohtml", msg.Template)
 
-	templateToRender := fmt.Sprintf("./cmd/web/templates/%s/plain.gohtml", msg.Template)
-
-	t, err := template.New("email-html").Parse(templateToRender)
-
+	t, err := template.New("email-plain").ParseFiles(templateToRender)
 	if err != nil {
 		return "", err
 	}
 
 	var tpl bytes.Buffer
-
 	if err = t.ExecuteTemplate(&tpl, "body", msg.DataMap); err != nil {
 		return "", err
-
 	}
 
 	plainMessage := tpl.String()
