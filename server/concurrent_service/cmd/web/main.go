@@ -1,12 +1,16 @@
 package main
 
 import (
+	"concsvc/internal/repository"
 	"database/sql"
+	"encoding/gob"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/alexedwards/scs/redisstore"
@@ -71,6 +75,8 @@ func openDB(dsn string) (*sql.DB, error) {
 }
 
 func initSession() *scs.SessionManager {
+	gob.Register(repository.User{})
+
 	session := scs.New()
 	session.Store = redisstore.New(initRedis())
 	session.Lifetime = 24 * time.Hour
@@ -107,6 +113,21 @@ func (app *Config) serve() {
 
 }
 
+func (app *Config) listenForShutdown() {
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	app.shutdown()
+	os.Exit(0)
+}
+
+func (app *Config) shutdown() {
+	app.InfoLog.Println("running cleanup")
+	app.Wait.Wait()
+
+	app.InfoLog.Println("closing channels and shutting down the app")
+}
+
 func main() {
 
 	db := initDB()
@@ -124,8 +145,10 @@ func main() {
 		Wait:     &wg,
 		InfoLog:  infoLog,
 		ErrorLog: errorLog,
+		Models:   repository.New(db),
 	}
 
-	app.serve()
+	go app.listenForShutdown()
 
+	app.serve()
 }
