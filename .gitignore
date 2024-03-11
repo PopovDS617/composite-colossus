@@ -21,3 +21,6 @@ vendor
 
 #logs
 **/logs/*.log
+
+#db related files
+db-data
