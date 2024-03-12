@@ -17,6 +17,10 @@ import (
 var testApp Config
 
 func TestMain(m *testing.M) {
+	pathToTemplates = "./templates"
+	pathToManual = "./../../pdf"
+	tmpPath = "./../../tmp"
+
 	gob.Register(repository.User{})
 
 	session := scs.New()
@@ -29,10 +33,10 @@ func TestMain(m *testing.M) {
 	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	testApp = Config{Session: session,
-		DB:       nil,
-		InfoLog:  infoLog,
-		ErrorLog: errorLog,
-		// Models:        repository.New(db),
+		DB:            nil,
+		InfoLog:       infoLog,
+		ErrorLog:      errorLog,
+		Models:        repository.TestNew(nil),
 		ErrorChan:     make(chan error),
 		ErrorChanDone: make(chan bool),
 		Wait:          &sync.WaitGroup{},
@@ -50,11 +54,14 @@ func TestMain(m *testing.M) {
 	}
 
 	go func() {
-		select {
-		case <-testApp.Mailer.MailerChan:
-		case <-testApp.Mailer.ErrorChan:
-		case <-testApp.Mailer.DoneChan:
-			return
+		for {
+			select {
+			case <-testApp.Mailer.MailerChan:
+				testApp.Wait.Done()
+			case <-testApp.Mailer.ErrorChan:
+			case <-testApp.Mailer.DoneChan:
+				return
+			}
 		}
 	}()
 

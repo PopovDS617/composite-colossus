@@ -42,7 +42,6 @@ var pageTests = []struct {
 }
 
 func Test_Get_Pages(t *testing.T) {
-	pathToTemplates = "./templates"
 
 	for _, e := range pageTests {
 		rr := httptest.NewRecorder()
@@ -75,27 +74,52 @@ func Test_Get_Pages(t *testing.T) {
 }
 
 func Test_Post_Pages(t *testing.T) {
-	pathToTemplates = "./templates"
 
 	postedData := url.Values{
 		"email":    {"admin@example.com"},
-		"password": {"abc"},
+		"password": {"abc123abc123abc123abc123"},
 	}
 
 	rr := httptest.NewRecorder()
-
 	req, _ := http.NewRequest("POST", "/login", strings.NewReader(postedData.Encode()))
-
 	ctx := getCtx(req)
-
 	req = req.WithContext(ctx)
 
 	handler := http.HandlerFunc(testApp.PostLoginPage)
-
 	handler.ServeHTTP(rr, req)
 
 	if rr.Code != http.StatusSeeOther {
 		t.Error("wrong code returned")
+	}
+
+	if !testApp.Session.Exists(ctx, "userID") {
+		t.Error("did not find userID in session")
+	}
+
+}
+
+func TestConfig_SubscribeToPlan(t *testing.T) {
+	rr := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/subscribe?id=1", nil)
+	ctx := getCtx(req)
+	req = req.WithContext(ctx)
+
+	testApp.Session.Put(ctx, "user", repository.User{
+		ID:        1,
+		Email:     "admin@example.com",
+		FirstName: "Admin",
+		LastName:  "User",
+		Active:    1,
+	})
+
+	handler := http.HandlerFunc(testApp.SubscribeToPlan)
+
+	handler.ServeHTTP(rr, req)
+
+	testApp.Wait.Wait()
+
+	if rr.Code != http.StatusSeeOther {
+		t.Errorf("expected status code of statusseeother, but got %d", rr.Code)
 	}
 
 }
