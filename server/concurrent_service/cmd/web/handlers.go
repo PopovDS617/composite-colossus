@@ -2,7 +2,7 @@ package main
 
 import (
 	"concsvc/internal/repository"
-	"concsvc/internal/repository/utils"
+	"concsvc/internal/utils"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -165,80 +165,6 @@ func (app *Config) ChooseSubscription(w http.ResponseWriter, r *http.Request) {
 	})
 
 }
-
-// func (app *Config) SubscribeToPlan(w http.ResponseWriter, r *http.Request) {
-// 	id := r.URL.Query().Get("id")
-
-// 	planID, err := strconv.Atoi(id)
-
-// 	if err != nil {
-// 		app.ErrorLog.Println("Error getting planID", err)
-// 	}
-
-// 	plan, err := app.Models.Plan.GetOne(planID)
-
-// 	if err != nil {
-// 		app.Session.Put(r.Context(), "error", "Unable to find plan")
-// 		http.Redirect(w, r, "/auth/plans", http.StatusSeeOther)
-// 		return
-// 	}
-
-// 	user, ok := app.Session.Get(r.Context(), "user").(repository.User)
-
-// 	if !ok {
-// 		app.Session.Put(r.Context(), "error", "Log in first!")
-// 		http.Redirect(w, r, "/login", http.StatusSeeOther)
-// 		return
-// 	}
-
-// 	app.Wait.Add(1)
-
-// 	go func() {
-// 		defer app.Wait.Done()
-
-// 		invoice, err := app.getInvoice(user, plan)
-
-// 		if err != nil {
-// 			app.ErrorChan <- err
-// 		}
-
-// 		msg := Message{
-// 			To:       user.Email,
-// 			Subject:  "Invoice",
-// 			Data:     invoice,
-// 			Template: "invoice",
-// 		}
-
-// 		app.sendEmail(msg)
-// 	}()
-
-// 	app.Wait.Add(1)
-// 	go func() {
-// 		defer app.Wait.Done()
-
-// 		pdf := app.generateManual(user, plan)
-// 		err := pdf.OutputFileAndClose(fmt.Sprintf("./tmp/%d_manual.pdf", user.ID))
-// 		if err != nil {
-// 			app.ErrorChan <- err
-// 			return
-// 		}
-
-// 		msg := Message{
-// 			To:      user.Email,
-// 			Subject: "Your manual",
-// 			Data:    "Your user manual is attached",
-// 			AttachmentMap: map[string]string{
-// 				"Manual.PDF": fmt.Sprintf("./tmp/%d_manual.pdf", user.ID),
-// 			},
-// 		}
-
-// 		app.sendEmail(msg)
-
-// 	}()
-
-// 	app.Session.Put(r.Context(), "flash", "Subscribed!")
-// 	http.Redirect(w, r, "/auth/plans", http.StatusSeeOther)
-// }
 
 func (app *Config) SubscribeToPlan(w http.ResponseWriter, r *http.Request) {
 	// get the id of the plan that is chosen

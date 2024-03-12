@@ -11,15 +11,17 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: concurrency
     volumes:
-      - ./db-data/postgres/:/var/lib/postgresql/data/
+      - db-data/:/var/lib/postgresql/data/
 
   redis:
     image: "redis:alpine"
     ports:
       - "6379:6379"
     restart: always
+    # volumes:
+    #   - ./db-data/redis/:/data/
     volumes:
-      - ./db-data/redis/:/data/
+      - cache:/data
 
   mailhog:
     image: "mailhog/mailhog:latest"
@@ -27,3 +29,7 @@ services:
       - "1025:1025"
       - "8025:8025"
     restart: always
+
+volumes:
+  db-data:
+  cache:
