@@ -122,10 +122,40 @@ func (app *Config) listenForShutdown() {
 }
 
 func (app *Config) shutdown() {
-	app.InfoLog.Println("running cleanup")
+	// perform any cleanup tasks
+	app.InfoLog.Println("would run cleanup tasks...")
+
+	// block until waitgroup is empty
 	app.Wait.Wait()
 
-	app.InfoLog.Println("closing channels and shutting down the app")
+	app.Mailer.DoneChan <- true
+
+	app.InfoLog.Println("closing channels and shutting down application...")
+	close(app.Mailer.MailerChan)
+	close(app.Mailer.ErrorChan)
+	close(app.Mailer.DoneChan)
+}
+
+func (app *Config) createMail() Mail {
+	errorChan := make(chan error)
+	mailerChan := make(chan Message, 128)
+	doneChan := make(chan bool)
+
+	m := Mail{
+		Domain:      "localhost",
+		Host:        "localhost",
+		Port:        1025,
+		Encryption:  "none",
+		FromName:    "admin",
+		FromAddress: "info@example.com",
+		ErrorChan:   errorChan,
+		MailerChan:  mailerChan,
+		DoneChan:    doneChan,
+		Wait:        app.Wait,
+	}
+
+	return m
+
 }
 
 func main() {
@@ -148,6 +178,9 @@ func main() {
 		Models:   repository.New(db),
 	}
 
+	app.Mailer = app.createMail()
+
+	go app.listenForMail()
 	go app.listenForShutdown()
 
 	app.serve()

@@ -104,26 +104,26 @@ func (u *User) GetByEmail(email string) (*User, error) {
 		return nil, err
 	}
 
-	// // get plan, if any
-	// query = `select p.id, p.plan_name, p.plan_amount, p.created_at, p.updated_at from
-	// 		plans p
-	// 		left join user_plans up on (p.id = up.plan_id)
-	// 		where up.user_id = $1`
+	// get plan, if any
+	query = `select p.id, p.plan_name, p.plan_amount, p.created_at, p.updated_at from
+			plans p
+			left join user_plans up on (p.id = up.plan_id)
+			where up.user_id = $1`
 
-	// var plan Plan
-	// row = db.QueryRowContext(ctx, query, user.ID)
+	var plan Plan
+	row = db.QueryRowContext(ctx, query, user.ID)
 
-	// err = row.Scan(
-	// 	&plan.ID,
-	// 	&plan.PlanName,
-	// 	&plan.PlanAmount,
-	// 	&plan.CreatedAt,
-	// 	&plan.UpdatedAt,
-	// )
+	err = row.Scan(
+		&plan.ID,
+		&plan.PlanName,
+		&plan.PlanAmount,
+		&plan.CreatedAt,
+		&plan.UpdatedAt,
+	)
 
-	// if err == nil {
-	// 	user.Plan = &plan
-	// }
+	if err == nil {
+		user.Plan = &plan
+	}
 
 	return &user, nil
 }
