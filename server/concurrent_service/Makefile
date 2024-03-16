@@ -36,3 +36,9 @@ restart: stop start
 ## test: runs all tests
 test:
 	go test -v ./...
+
+## docker up and down
+du:
+	docker-compose up -d
+dd:
+	docker-compose down
