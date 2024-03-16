@@ -13,12 +13,15 @@ import (
 	"withpsql/internal/closer"
 	"withpsql/internal/config"
 	animalRepo "withpsql/internal/repository/animal"
+
 	svc "withpsql/internal/service"
 	animalSvc "withpsql/internal/service/animal"
 )
 
 type serviceProvider struct {
-	pgConfig         config.PGConfig
+	pgConfig   config.PGConfig
+	httpConfig config.HTTPConfig
+
 	dbClient         db.Client
 	txManager        db.TxManager
 	animalRepository repository.AnimalRepository
@@ -28,6 +31,19 @@ type serviceProvider struct {
 
 func newServiceProvider() *serviceProvider {
 	return &serviceProvider{}
+}
+
+func (s *serviceProvider) HTTPConfig() config.HTTPConfig {
+	if s.httpConfig == nil {
+		cfg, err := config.NewHTTPConfig()
+		if err != nil {
+			log.Fatalf("failed to get http config: %s", err.Error())
+		}
+
+		s.httpConfig = cfg
+	}
+
+	return s.httpConfig
 }
 
 func (s *serviceProvider) PGConfig() config.PGConfig {
@@ -94,6 +110,7 @@ func (s *serviceProvider) AnimalService(ctx context.Context) svc.AnimalService {
 func (s *serviceProvider) AnimalImpl(ctx context.Context) *animalApi.Implementation {
 	if s.animalImpl == nil {
 		s.animalImpl = animalApi.NewImplementation(s.AnimalService(ctx))
+
 	}
 
 	return s.animalImpl
