@@ -6,8 +6,9 @@ import (
 	"withpsql/internal/model"
 )
 
-func (s *serv) Create(ctx context.Context, animal *model.Animal) (int64, error) {
+func (s *serv) Create(ctx context.Context, animal *model.Animal) (*model.Animal, error) {
 	var id int64
+	var insertedAnimal *model.Animal
 	err := s.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
 		var errTx error
 		id, errTx = s.animalRepository.Create(ctx, animal)
@@ -15,7 +16,7 @@ func (s *serv) Create(ctx context.Context, animal *model.Animal) (int64, error) 
 			return errTx
 		}
 
-		_, errTx = s.animalRepository.Get(ctx, id)
+		insertedAnimal, errTx = s.animalRepository.Get(ctx, id)
 		if errTx != nil {
 			return errTx
 		}
@@ -24,8 +25,8 @@ func (s *serv) Create(ctx context.Context, animal *model.Animal) (int64, error) 
 	})
 
 	if err != nil {
-		return 0, err
+		return nil, err
 	}
 
-	return id, nil
+	return insertedAnimal, nil
 }

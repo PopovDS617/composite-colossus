@@ -25,6 +25,7 @@ func NewTransactionManager(db db.Transactor) db.TxManager {
 func (m *manager) transaction(ctx context.Context, opts pgx.TxOptions, fn db.Handler) (err error) {
 	// Если это вложенная транзакция, пропускаем инициацию новой транзакции и выполняем обработчик.
 	tx, ok := ctx.Value(pg.TxKey).(pgx.Tx)
+
 	if ok {
 		return fn(ctx)
 	}
