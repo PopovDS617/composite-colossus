@@ -1,5 +1,5 @@
 BINARY_NAME=myapp
-DSN="host=localhost port=5432 user=postgres password=password dbname=withpsql sslmode=disable timezone=UTC connect_timeout=5"
+DSN="host=localhost port=5432 user=postgres password=password dbname=postgres sslmode=disable timezone=UTC connect_timeout=5"
 # REDIS="127.0.0.1:6379"
 
 
