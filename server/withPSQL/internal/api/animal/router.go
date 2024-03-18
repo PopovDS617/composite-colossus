@@ -13,6 +13,8 @@ func (i *Implementation) Router(ctx context.Context) http.Handler {
 	r.Get("/animals/{id}", i.GetAnimalHandler(ctx))
 	r.Get("/animals", i.GetAllAnimalsHandler(ctx))
 	r.Post("/animals", i.CreateAnimalHandler(ctx))
+	r.Delete("/animals/{id}", i.DeleteAnimalHandler(ctx))
+	r.Patch("/animals/{id}", i.UpdateAnimalHandler(ctx))
 
 	return r
 }

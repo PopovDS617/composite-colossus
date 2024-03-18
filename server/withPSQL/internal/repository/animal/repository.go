@@ -2,6 +2,7 @@ package animal
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -178,4 +179,82 @@ func (r *repo) GetAll(ctx context.Context) ([]*model.Animal, error) {
 	}
 
 	return animals, nil
+}
+
+func (r *repo) Delete(ctx context.Context, id int64) error {
+	builder := sq.Delete("animals").PlaceholderFormat(sq.Dollar).
+		From(animalsTableName).Where(sq.Eq{idColumn: id})
+
+	query, args, err := builder.ToSql()
+	if err != nil {
+		return err
+	}
+
+	q := db.Query{
+		Name:     "animal_repository.Delete",
+		QueryRaw: query,
+	}
+
+	ctag, err := r.db.DB().ExecContext(ctx, q, args...)
+
+	if err != nil {
+		fmt.Println("error", err)
+		return err
+	}
+
+	if ctag.RowsAffected() == 0 {
+		return errors.New("nothing to delete")
+	}
+
+	return nil
+}
+
+func (r *repo) Update(ctx context.Context, animal *model.Animal) error {
+
+	updatedAnimalMap := map[string]any{}
+
+	updatedAnimalMap[updatedAtColumn] = time.Now().Format(time.RFC3339)
+
+	if animal.Name != "" {
+		updatedAnimalMap[nameColumn] = animal.Name
+	}
+
+	if animal.Type != "" {
+		updatedAnimalMap[typeColumn] = animal.Type
+	}
+
+	if animal.Gender != "" {
+		updatedAnimalMap[genderColumn] = animal.Gender
+	}
+	if animal.Age > 0 {
+		updatedAnimalMap[ageColumn] = animal.Age
+	}
+
+	updateAnimalBuilder := sq.
+		Update(animalsTableName).
+		PlaceholderFormat(sq.Dollar).
+		SetMap(updatedAnimalMap).
+		Where(sq.Eq{idColumn: animal.ID})
+
+	query, args, err := updateAnimalBuilder.ToSql()
+	if err != nil {
+		return err
+	}
+
+	q := db.Query{
+		Name:     "animal_repository.Update",
+		QueryRaw: query,
+	}
+
+	ctag, err := r.db.DB().ExecContext(ctx, q, args...)
+	if err != nil {
+		fmt.Println(ctag, err)
+		return err
+	}
+
+	if ctag.RowsAffected() == 0 {
+		return errors.New("no rows were affected")
+	}
+
+	return nil
 }

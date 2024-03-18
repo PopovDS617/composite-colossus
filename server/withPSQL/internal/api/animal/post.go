@@ -3,6 +3,7 @@ package animal
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"withpsql/internal/model"
 	"withpsql/internal/utils"
@@ -18,8 +19,16 @@ func (i *Implementation) CreateAnimalHandler(ctx context.Context) func(w http.Re
 			return
 		}
 
+		inputErrorsMap, ok := animal.ValidateCreate()
+
+		if !ok {
+			utils.WriteJSON(w, http.StatusBadRequest, inputErrorsMap)
+			return
+		}
+
 		insertedAnimal, err := i.animalService.Create(ctx, &animal)
 		if err != nil {
+			fmt.Println(err)
 			utils.WriteJSON(w, http.StatusBadRequest, nil)
 			return
 		}
