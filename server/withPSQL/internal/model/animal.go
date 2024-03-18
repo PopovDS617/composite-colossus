@@ -42,29 +42,22 @@ func (a *Animal) ValidateCreate() (map[string]string, bool) {
 	return inputErrors, ok
 }
 
-func (a *Animal) ValidateUpdate() (map[string]string, bool) {
-	inputErrors := map[string]string{}
-	ok := true
+func (stored *Animal) ValidateAndUpdate(received *Animal) {
 
-	if a.Name == "" {
-		inputErrors["name"] = "should not be empty"
+	if stored.Name != received.Name && received.Name != "" {
+		stored.Name = received.Name
 	}
-	if a.Age < 0 {
-		inputErrors["age"] = "should not be a negative number"
+	if stored.Type != received.Type && received.Type != "" {
+		stored.Type = received.Type
 	}
-	if a.Type == "" {
-		inputErrors["type"] = "should not be empty"
+	if stored.Age != received.Age && received.Age != 0 {
+		stored.Age = received.Age
 	}
-	if a.Gender == "" {
-		inputErrors["gender"] = "should not be empty"
+	if stored.Gender != received.Gender && received.Gender != "" {
+		stored.Gender = received.Gender
 	}
-	if a.Region == "" {
-		inputErrors["region"] = "should not be empty"
+	if stored.LastTimeSeenAt != received.LastTimeSeenAt && !received.LastTimeSeenAt.IsZero() {
+		stored.LastTimeSeenAt = received.LastTimeSeenAt
 	}
 
-	if len(inputErrors) != 0 {
-		ok = false
-	}
-
-	return inputErrors, ok
 }

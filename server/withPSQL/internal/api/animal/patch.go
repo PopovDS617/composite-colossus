@@ -3,6 +3,8 @@ package animal
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"io"
 	"net/http"
 	"strconv"
 	"withpsql/internal/model"
@@ -18,21 +20,33 @@ func (i *Implementation) UpdateAnimalHandler(ctx context.Context) func(w http.Re
 			utils.WriteJSON(w, http.StatusBadRequest, map[string]string{"error": "wrong id format"})
 			return
 		}
-		var animal model.Animal
+		var receivedAnimal model.Animal
 
-		if err := json.NewDecoder(r.Body).Decode(&animal); err != nil {
-			utils.WriteJSON(w, http.StatusBadRequest, nil)
+		if err := json.NewDecoder(r.Body).Decode(&receivedAnimal); err != nil {
+			if errors.Is(err, io.EOF) {
+				utils.WriteJSON(w, http.StatusBadRequest, map[string]string{"error": "request body is empty"})
+				return
+			}
+			utils.WriteJSON(w, http.StatusBadRequest, map[string]string{"error": "wrong request body format"})
+			return
+		}
+		defer r.Body.Close()
+
+		storedAnimal, err := i.animalService.Get(ctx, animalID)
+
+		if err != nil {
+			utils.WriteJSON(w, http.StatusNotFound, map[string]string{"error": "not found"})
 			return
 		}
 
-		animal.ID = animalID
+		storedAnimal.ValidateAndUpdate(&receivedAnimal)
 
-		updatedAnimal, err := i.animalService.Update(ctx, &animal)
+		updatedAnimal, err := i.animalService.Update(ctx, storedAnimal)
 		if err != nil {
 			utils.WriteJSON(w, http.StatusBadRequest, nil)
 			return
 		}
 
-		utils.WriteJSON(w, http.StatusCreated, updatedAnimal)
+		utils.WriteJSON(w, http.StatusOK, updatedAnimal)
 	}
 }
