@@ -2,13 +2,17 @@ package app
 
 import (
 	"context"
-	"net/http"
 
 	"withpsql/internal/closer"
+	"withpsql/internal/server"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 type App struct {
 	serviceProvider *serviceProvider
+	httpServer      *server.HTTPServer
 }
 
 func NewApp(ctx context.Context) (*App, error) {
@@ -23,18 +27,14 @@ func NewApp(ctx context.Context) (*App, error) {
 }
 
 func (a *App) Run() error {
-	defer func() {
-		closer.CloseAll()
-		closer.Wait()
-	}()
 
-	return http.ListenAndServe("localhost:9000", a.serviceProvider.animalImpl.Router(context.Background()))
+	return a.runHTTPServer()
 }
 
 func (a *App) initDeps(ctx context.Context) error {
 	inits := []func(context.Context) error{
-
 		a.initServiceProvider,
+		a.initHTTPServer,
 	}
 
 	for _, f := range inits {
@@ -50,4 +50,36 @@ func (a *App) initDeps(ctx context.Context) error {
 func (a *App) initServiceProvider(_ context.Context) error {
 	a.serviceProvider = newServiceProvider()
 	return nil
+}
+
+func (a *App) initHTTPServer(ctx context.Context) error {
+
+	r := chi.NewRouter()
+
+	animal := a.serviceProvider.AnimalAPI(ctx)
+	animalRouter := animal.Router(ctx)
+
+	region := a.serviceProvider.RegionAPI(ctx)
+	regionRouter := region.Router(ctx)
+
+	r.Use(middleware.Recoverer)
+
+	r.Mount("/regions", regionRouter)
+	r.Mount("/animals", animalRouter)
+
+	port := a.serviceProvider.HTTPConfig().Port()
+
+	server := server.NewHTTPServer(r, port)
+
+	a.httpServer = server
+
+	return nil
+}
+
+func (a *App) runHTTPServer() error {
+	a.httpServer.PrintStatus()
+
+	closer.Add(a.httpServer.Shutdown)
+
+	return a.httpServer.Run()
 }

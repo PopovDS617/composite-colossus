@@ -2,13 +2,18 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"withpsql/internal/app"
+	"withpsql/internal/closer"
 )
 
 func main() {
+	defer func() {
+		closer.CloseAll()
+		closer.Wait()
+	}()
+
 	ctx := context.Background()
 
 	a, err := app.NewApp(ctx)
@@ -20,5 +25,5 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to run app: %s", err.Error())
 	}
-	fmt.Println("server listening on port 9000")
+
 }

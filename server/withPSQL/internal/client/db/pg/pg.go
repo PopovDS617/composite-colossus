@@ -78,6 +78,7 @@ func (p *pg) QueryRowContext(ctx context.Context, q db.Query, args ...interface{
 	logQuery(ctx, q, args...)
 
 	tx, ok := ctx.Value(TxKey).(pgx.Tx)
+
 	if ok {
 		return tx.QueryRow(ctx, q.QueryRaw, args...)
 	}

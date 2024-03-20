@@ -3,13 +3,18 @@ package animal
 import (
 	"context"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
 )
 
-func (i *Implementation) Router(ctx context.Context) http.Handler {
-	mux := http.NewServeMux()
+func (api *AnimalAPI) Router(ctx context.Context) http.Handler {
+	r := chi.NewRouter()
 
-	mux.HandleFunc("GET /animal/{id}", i.GetAnimalHandler(ctx))
-	mux.HandleFunc("POST /animal", i.CreateAnimalHandler(ctx))
+	r.Get("/{id}", api.GetAnimalHandler(ctx))
+	r.Get("/", api.GetAllAnimalsHandler(ctx))
+	r.Post("/", api.CreateAnimalHandler(ctx))
+	r.Delete("/{id}", api.DeleteAnimalHandler(ctx))
+	r.Patch("/{id}", api.UpdateAnimalHandler(ctx))
 
-	return mux
+	return r
 }
