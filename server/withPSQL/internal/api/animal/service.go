@@ -4,12 +4,12 @@ import (
 	"withpsql/internal/service"
 )
 
-type Implementation struct {
+type AnimalAPI struct {
 	animalService service.AnimalService
 }
 
-func NewImplementation(animalService service.AnimalService) *Implementation {
-	return &Implementation{
+func NewAnimalAPI(animalService service.AnimalService) *AnimalAPI {
+	return &AnimalAPI{
 		animalService: animalService,
 	}
 }

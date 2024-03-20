@@ -11,7 +11,7 @@ import (
 	"withpsql/internal/utils"
 )
 
-func (i *Implementation) UpdateAnimalHandler(ctx context.Context) func(w http.ResponseWriter, r *http.Request) {
+func (api *AnimalAPI) UpdateAnimalHandler(ctx context.Context) func(w http.ResponseWriter, r *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		animalID, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
@@ -32,7 +32,7 @@ func (i *Implementation) UpdateAnimalHandler(ctx context.Context) func(w http.Re
 		}
 		defer r.Body.Close()
 
-		storedAnimal, err := i.animalService.Get(ctx, animalID)
+		storedAnimal, err := api.animalService.Get(ctx, animalID)
 
 		if err != nil {
 			utils.WriteJSON(w, http.StatusNotFound, map[string]string{"error": "not found"})
@@ -41,7 +41,7 @@ func (i *Implementation) UpdateAnimalHandler(ctx context.Context) func(w http.Re
 
 		storedAnimal.ValidateAndUpdate(&receivedAnimal)
 
-		updatedAnimal, err := i.animalService.Update(ctx, storedAnimal)
+		updatedAnimal, err := api.animalService.Update(ctx, storedAnimal)
 		if err != nil {
 			utils.WriteJSON(w, http.StatusBadRequest, nil)
 			return
