@@ -2,7 +2,6 @@ package animal
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 )
 
@@ -19,6 +18,6 @@ func (i *Implementation) CreateAnimalHandler(ctx context.Context) func(w http.Re
 		// return &desc.CreateResponse{
 		// 	Id: id,
 		// }, nil
-		fmt.Println("in post req")
+
 	}
 }

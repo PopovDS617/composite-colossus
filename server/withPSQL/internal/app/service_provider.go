@@ -31,6 +31,7 @@ func newServiceProvider() *serviceProvider {
 }
 
 func (s *serviceProvider) PGConfig() config.PGConfig {
+
 	if s.pgConfig == nil {
 		cfg, err := config.NewPGConfig()
 		if err != nil {
@@ -44,6 +45,7 @@ func (s *serviceProvider) PGConfig() config.PGConfig {
 }
 
 func (s *serviceProvider) DBClient(ctx context.Context) db.Client {
+
 	if s.dbClient == nil {
 		cl, err := pg.New(ctx, s.PGConfig().DSN())
 		if err != nil {
@@ -79,7 +81,6 @@ func (s *serviceProvider) AnimalRepository(ctx context.Context) repository.Anima
 }
 
 func (s *serviceProvider) AnimalService(ctx context.Context) svc.AnimalService {
-
 	if s.animalService == nil {
 		s.animalService = animalSvc.NewService(
 			s.AnimalRepository(ctx),
@@ -93,7 +94,6 @@ func (s *serviceProvider) AnimalService(ctx context.Context) svc.AnimalService {
 func (s *serviceProvider) AnimalImpl(ctx context.Context) *animalApi.Implementation {
 	if s.animalImpl == nil {
 		s.animalImpl = animalApi.NewImplementation(s.AnimalService(ctx))
-		s.animalImpl.Router(ctx)
 	}
 
 	return s.animalImpl
