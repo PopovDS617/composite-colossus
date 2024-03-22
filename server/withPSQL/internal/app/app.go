@@ -2,9 +2,9 @@ package app
 
 import (
 	"context"
-	"net/http"
 
 	"withpsql/internal/closer"
+	"withpsql/internal/server"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -12,7 +12,7 @@ import (
 
 type App struct {
 	serviceProvider *serviceProvider
-	router          *chi.Mux
+	httpServer      *server.HTTPServer
 }
 
 func NewApp(ctx context.Context) (*App, error) {
@@ -66,11 +66,15 @@ func (a *App) initHTTPServer(ctx context.Context) error {
 
 	r.Mount("/", animalRouter)
 
-	a.router = r
+	port := a.serviceProvider.HTTPConfig().Port()
+
+	server := server.NewHTTPServer(r, port)
+
+	a.httpServer = server
 
 	return nil
 }
 
 func (a *App) runHTTPServer() error {
-	return http.ListenAndServe("localhost:9000", a.router)
+	return a.httpServer.Run()
 }

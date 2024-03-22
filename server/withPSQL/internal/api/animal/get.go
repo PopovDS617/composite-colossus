@@ -2,16 +2,53 @@ package animal
 
 import (
 	"context"
-	"fmt"
 	"net/http"
+	"strconv"
+	"withpsql/internal/utils"
 )
 
 func (i *Implementation) GetAnimalHandler(ctx context.Context) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// noteObj, err := i.animalService.Get(ctx, req.GetId())
-		// if err != nil {
-		// 	return nil, err
-		// }
-		fmt.Println("in get req")
+		animalID, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
+
+		if err != nil {
+			utils.WriteJSON(w, http.StatusBadRequest, map[string]string{"error": "wrong id format"})
+			return
+		}
+
+		animal, err := i.animalService.Get(ctx, int64(animalID))
+
+		if err != nil {
+			utils.WriteJSON(w, http.StatusNotFound, map[string]string{"error": "not found"})
+			return
+		}
+
+		err = utils.WriteJSON(w, http.StatusOK, animal)
+
+		if err != nil {
+			utils.WriteJSON(w, http.StatusInternalServerError, map[string]string{"error": "internal error"})
+			return
+		}
+
+	}
+}
+
+func (i *Implementation) GetAllAnimalsHandler(ctx context.Context) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		animals, err := i.animalService.GetAll(ctx)
+
+		if err != nil {
+			utils.WriteJSON(w, http.StatusNotFound, map[string]string{"error": "not found"})
+			return
+		}
+
+		err = utils.WriteJSON(w, http.StatusOK, animals)
+
+		if err != nil {
+			utils.WriteJSON(w, http.StatusInternalServerError, map[string]string{"error": "internal error"})
+			return
+		}
+
 	}
 }
