@@ -2,22 +2,28 @@ package animal
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
+	"withpsql/internal/model"
+	"withpsql/internal/utils"
 )
 
 func (i *Implementation) CreateAnimalHandler(ctx context.Context) func(w http.ResponseWriter, r *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		// id, err := i.animalService.Create(ctx, converter.ToNoteInfoFromDesc(req.GetInfo()))
-		// if err != nil {
-		// 	return nil, err
-		// }
+		var animal model.Animal
 
-		// log.Printf("inserted note with id: %d", id)
+		if err := json.NewDecoder(r.Body).Decode(&animal); err != nil {
+			utils.WriteJSON(w, http.StatusBadRequest, nil)
+			return
+		}
 
-		// return &desc.CreateResponse{
-		// 	Id: id,
-		// }, nil
+		insertedAnimal, err := i.animalService.Create(ctx, &animal)
+		if err != nil {
+			utils.WriteJSON(w, http.StatusBadRequest, nil)
+			return
+		}
 
+		utils.WriteJSON(w, http.StatusCreated, insertedAnimal)
 	}
 }

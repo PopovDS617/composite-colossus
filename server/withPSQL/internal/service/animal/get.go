@@ -16,7 +16,16 @@ func (s *serv) Get(ctx context.Context, id int64) (*model.Animal, error) {
 }
 
 func (s *serv) GetAll(ctx context.Context) ([]*model.Animal, error) {
-	animals, err := s.animalRepository.GetAll(ctx)
+	var animals []*model.Animal
+	err := s.txManager.ReadCommitted(ctx, func(ctx context.Context) error {
+		var errTx error
+		animals, errTx = s.animalRepository.GetAll(ctx)
+		if errTx != nil {
+			return errTx
+		}
+
+		return nil
+	})
 
 	if err != nil {
 		return nil, err
