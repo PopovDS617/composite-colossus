@@ -14,3 +14,57 @@ type Animal struct {
 	LastTimeSeenAt time.Time `json:"last_time_seen_at"`
 	SeenByDevice   int       `json:"seen_by_device"`
 }
+
+func (a *Animal) ValidateCreate() (map[string]string, bool) {
+	inputErrors := map[string]string{}
+	ok := true
+
+	if a.Name == "" {
+		inputErrors["name"] = "should not be empty"
+	}
+	if a.Age < 0 {
+		inputErrors["age"] = "should not be a negative number"
+	}
+	if a.Type == "" {
+		inputErrors["type"] = "should not be empty"
+	}
+	if a.Gender == "" {
+		inputErrors["gender"] = "should not be empty"
+	}
+	if a.Region == "" {
+		inputErrors["region"] = "should not be empty"
+	}
+
+	if len(inputErrors) != 0 {
+		ok = false
+	}
+
+	return inputErrors, ok
+}
+
+func (a *Animal) ValidateUpdate() (map[string]string, bool) {
+	inputErrors := map[string]string{}
+	ok := true
+
+	if a.Name == "" {
+		inputErrors["name"] = "should not be empty"
+	}
+	if a.Age < 0 {
+		inputErrors["age"] = "should not be a negative number"
+	}
+	if a.Type == "" {
+		inputErrors["type"] = "should not be empty"
+	}
+	if a.Gender == "" {
+		inputErrors["gender"] = "should not be empty"
+	}
+	if a.Region == "" {
+		inputErrors["region"] = "should not be empty"
+	}
+
+	if len(inputErrors) != 0 {
+		ok = false
+	}
+
+	return inputErrors, ok
+}
