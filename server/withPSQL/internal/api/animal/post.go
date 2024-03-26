@@ -18,6 +18,7 @@ func (i *Implementation) CreateAnimalHandler(ctx context.Context) func(w http.Re
 			utils.WriteJSON(w, http.StatusBadRequest, nil)
 			return
 		}
+		defer r.Body.Close()
 
 		inputErrorsMap, ok := animal.ValidateCreate()
 

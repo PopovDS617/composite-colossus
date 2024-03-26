@@ -211,29 +211,14 @@ func (r *repo) Delete(ctx context.Context, id int64) error {
 
 func (r *repo) Update(ctx context.Context, animal *model.Animal) error {
 
-	updatedAnimalMap := map[string]any{}
-
-	updatedAnimalMap[updatedAtColumn] = time.Now().Format(time.RFC3339)
-
-	if animal.Name != "" {
-		updatedAnimalMap[nameColumn] = animal.Name
-	}
-
-	if animal.Type != "" {
-		updatedAnimalMap[typeColumn] = animal.Type
-	}
-
-	if animal.Gender != "" {
-		updatedAnimalMap[genderColumn] = animal.Gender
-	}
-	if animal.Age > 0 {
-		updatedAnimalMap[ageColumn] = animal.Age
-	}
-
 	updateAnimalBuilder := sq.
 		Update(animalsTableName).
 		PlaceholderFormat(sq.Dollar).
-		SetMap(updatedAnimalMap).
+		Set(nameColumn, animal.Name).
+		Set(typeColumn, animal.Type).
+		Set(genderColumn, animal.Gender).
+		Set(ageColumn, animal.Age).
+		Set(updatedAtColumn, time.Now().Format(time.RFC3339)).
 		Where(sq.Eq{idColumn: animal.ID})
 
 	query, args, err := updateAnimalBuilder.ToSql()
