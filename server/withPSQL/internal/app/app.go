@@ -27,10 +27,7 @@ func NewApp(ctx context.Context) (*App, error) {
 }
 
 func (a *App) Run() error {
-	defer func() {
-		closer.CloseAll()
-		closer.Wait()
-	}()
+
 	return a.runHTTPServer()
 }
 
@@ -59,12 +56,16 @@ func (a *App) initHTTPServer(ctx context.Context) error {
 
 	r := chi.NewRouter()
 
-	animal := a.serviceProvider.AnimalImpl(ctx)
+	animal := a.serviceProvider.AnimalAPI(ctx)
 	animalRouter := animal.Router(ctx)
+
+	region := a.serviceProvider.RegionAPI(ctx)
+	regionRouter := region.Router(ctx)
 
 	r.Use(middleware.Recoverer)
 
-	r.Mount("/", animalRouter)
+	r.Mount("/regions", regionRouter)
+	r.Mount("/animals", animalRouter)
 
 	port := a.serviceProvider.HTTPConfig().Port()
 
@@ -76,5 +77,9 @@ func (a *App) initHTTPServer(ctx context.Context) error {
 }
 
 func (a *App) runHTTPServer() error {
+	a.httpServer.PrintStatus()
+
+	closer.Add(a.httpServer.Shutdown)
+
 	return a.httpServer.Run()
 }

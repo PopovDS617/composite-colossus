@@ -43,7 +43,14 @@ stop:
 	@echo "Stopped!"
 
 ## restart: stops and starts the application
-restart: stop start
+restart: stop
+	@if nc -z localhost 9000; then\
+		echo "Port 9000 is busy"; \
+	else \
+		sleep 2; \
+	fi; \
+	$(MAKE) run
+
 
 ## test: runs all tests
 test:

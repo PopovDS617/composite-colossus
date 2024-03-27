@@ -7,7 +7,7 @@ import (
 	"withpsql/internal/utils"
 )
 
-func (i *Implementation) GetAnimalHandler(ctx context.Context) func(w http.ResponseWriter, r *http.Request) {
+func (api *AnimalAPI) GetAnimalHandler(ctx context.Context) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		animalID, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 
@@ -16,7 +16,7 @@ func (i *Implementation) GetAnimalHandler(ctx context.Context) func(w http.Respo
 			return
 		}
 
-		animal, err := i.animalService.Get(ctx, int64(animalID))
+		animal, err := api.animalService.Get(ctx, int64(animalID))
 
 		if err != nil {
 			utils.WriteJSON(w, http.StatusNotFound, map[string]string{"error": "not found"})
@@ -33,10 +33,10 @@ func (i *Implementation) GetAnimalHandler(ctx context.Context) func(w http.Respo
 	}
 }
 
-func (i *Implementation) GetAllAnimalsHandler(ctx context.Context) func(w http.ResponseWriter, r *http.Request) {
+func (api *AnimalAPI) GetAllAnimalsHandler(ctx context.Context) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		animals, err := i.animalService.GetAll(ctx)
+		animals, err := api.animalService.GetAll(ctx)
 
 		if err != nil {
 			utils.WriteJSON(w, http.StatusNotFound, map[string]string{"error": "not found"})

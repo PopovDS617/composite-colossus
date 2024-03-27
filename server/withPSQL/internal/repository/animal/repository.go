@@ -123,7 +123,7 @@ func (r *repo) Get(ctx context.Context, id int64) (*model.Animal, error) {
 	)
 
 	if err != nil {
-		fmt.Println(err)
+
 		return nil, err
 	}
 
@@ -148,7 +148,7 @@ func (r *repo) GetAll(ctx context.Context) ([]*model.Animal, error) {
 
 	rows, err := r.db.DB().QueryContext(ctx, q, args...)
 	if err != nil {
-		fmt.Println(err)
+
 		return nil, err
 	}
 
@@ -198,7 +198,7 @@ func (r *repo) Delete(ctx context.Context, id int64) error {
 	ctag, err := r.db.DB().ExecContext(ctx, q, args...)
 
 	if err != nil {
-		fmt.Println("error", err)
+
 		return err
 	}
 
@@ -233,7 +233,7 @@ func (r *repo) Update(ctx context.Context, animal *model.Animal) error {
 
 	ctag, err := r.db.DB().ExecContext(ctx, q, args...)
 	if err != nil {
-		fmt.Println(ctag, err)
+
 		return err
 	}
 

@@ -4,7 +4,8 @@ import (
 	"context"
 	"log"
 
-	animalApi "withpsql/internal/api/animal"
+	animalAPI "withpsql/internal/api/animal"
+	regionAPI "withpsql/internal/api/region"
 	"withpsql/internal/repository"
 
 	"withpsql/internal/client/db"
@@ -13,9 +14,11 @@ import (
 	"withpsql/internal/closer"
 	"withpsql/internal/config"
 	animalRepo "withpsql/internal/repository/animal"
+	regionRepo "withpsql/internal/repository/region"
 
 	svc "withpsql/internal/service"
 	animalSvc "withpsql/internal/service/animal"
+	regionSvc "withpsql/internal/service/region"
 )
 
 type serviceProvider struct {
@@ -26,7 +29,10 @@ type serviceProvider struct {
 	txManager        db.TxManager
 	animalRepository repository.AnimalRepository
 	animalService    svc.AnimalService
-	animalImpl       *animalApi.Implementation
+	animalAPI        *animalAPI.AnimalAPI
+	regionRepository repository.RegionRepository
+	regionService    svc.RegionService
+	regionAPI        *regionAPI.RegionAPI
 }
 
 func newServiceProvider() *serviceProvider {
@@ -107,11 +113,38 @@ func (s *serviceProvider) AnimalService(ctx context.Context) svc.AnimalService {
 	return s.animalService
 }
 
-func (s *serviceProvider) AnimalImpl(ctx context.Context) *animalApi.Implementation {
-	if s.animalImpl == nil {
-		s.animalImpl = animalApi.NewImplementation(s.AnimalService(ctx))
+func (s *serviceProvider) AnimalAPI(ctx context.Context) *animalAPI.AnimalAPI {
+	if s.animalAPI == nil {
+		s.animalAPI = animalAPI.NewAnimalAPI(s.AnimalService(ctx))
 
 	}
 
-	return s.animalImpl
+	return s.animalAPI
+}
+func (s *serviceProvider) RegionRepository(ctx context.Context) repository.RegionRepository {
+	if s.regionRepository == nil {
+		s.regionRepository = regionRepo.NewRepository(s.DBClient(ctx))
+	}
+
+	return s.regionRepository
+}
+
+func (s *serviceProvider) RegionService(ctx context.Context) svc.RegionService {
+	if s.regionService == nil {
+		s.regionService = regionSvc.NewService(
+			s.RegionRepository(ctx),
+			s.TxManager(ctx),
+		)
+	}
+
+	return s.regionService
+}
+
+func (s *serviceProvider) RegionAPI(ctx context.Context) *regionAPI.RegionAPI {
+	if s.regionAPI == nil {
+		s.regionAPI = regionAPI.NewRegionAPI(s.RegionService(ctx))
+
+	}
+
+	return s.regionAPI
 }

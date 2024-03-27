@@ -1,6 +1,6 @@
 package model
 
 type Region struct {
-	ID   int
-	name string
+	ID   int64
+	Name string
 }
