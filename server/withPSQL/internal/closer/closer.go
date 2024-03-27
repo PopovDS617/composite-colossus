@@ -1,13 +1,17 @@
 package closer
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"sync"
+	"syscall"
 )
 
-var globalCloser = New()
+var globalCloser = New(os.Interrupt,
+	syscall.SIGTERM,
+	syscall.SIGQUIT)
 
 // Add adds `func() error` callback to the globalCloser
 func Add(f ...func() error) {
@@ -41,6 +45,7 @@ func New(sig ...os.Signal) *Closer {
 			signal.Notify(ch, sig...)
 			<-ch
 			signal.Stop(ch)
+			fmt.Println("closing . . .")
 			c.CloseAll()
 		}()
 	}
@@ -62,6 +67,7 @@ func (c *Closer) Wait() {
 // CloseAll calls all closer functions
 func (c *Closer) CloseAll() {
 	c.once.Do(func() {
+		defer fmt.Println("closed!")
 		defer close(c.done)
 
 		c.mu.Lock()

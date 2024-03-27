@@ -3,13 +3,12 @@ package animal
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"withpsql/internal/model"
 	"withpsql/internal/utils"
 )
 
-func (i *Implementation) CreateAnimalHandler(ctx context.Context) func(w http.ResponseWriter, r *http.Request) {
+func (api *AnimalAPI) CreateAnimalHandler(ctx context.Context) func(w http.ResponseWriter, r *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		var animal model.Animal
@@ -27,9 +26,9 @@ func (i *Implementation) CreateAnimalHandler(ctx context.Context) func(w http.Re
 			return
 		}
 
-		insertedAnimal, err := i.animalService.Create(ctx, &animal)
+		insertedAnimal, err := api.animalService.Create(ctx, &animal)
 		if err != nil {
-			fmt.Println(err)
+
 			utils.WriteJSON(w, http.StatusBadRequest, nil)
 			return
 		}

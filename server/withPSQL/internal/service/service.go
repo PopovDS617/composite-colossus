@@ -15,5 +15,5 @@ type AnimalService interface {
 }
 
 type RegionService interface {
-	GetAll(ctx context.Context)
+	GetAll(ctx context.Context) ([]*model.Region, error)
 }
