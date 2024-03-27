@@ -27,7 +27,7 @@ services:
     build:
       context: .
       dockerfile: ./grpc_server/migration_local.Dockerfile
-    restart: on-failure
+    restart: unless-stopped
     environment:
       DB_HOST: pg-local
 
@@ -35,7 +35,7 @@ services:
     build:
       context: .
       dockerfile: ./grpc_server/migration_prod.Dockerfile
-    restart: on-failure
+    restart: unless-stopped
     environment:
       DB_HOST: pg-prod
 
@@ -47,7 +47,7 @@ services:
       - "8080:8080"
   pg-admin:
     image: dpage/pgadmin4
-    restart: always
+    restart: unless-stopped
     env_file:
       - "./grpc_server/local.env"
     ports:
