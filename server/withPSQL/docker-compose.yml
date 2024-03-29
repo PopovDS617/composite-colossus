@@ -13,6 +13,16 @@ services:
     volumes:
       - pgdb-data1:/var/lib/postgresql/data1/
 
+  withpsqlrestapi:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "9000:9000"
+    environment:
+      - HTTP_PORT=9000
+      - DSN=host=postgres port=5432 user=postgres password=password dbname=postgres sslmode=disable timezone=UTC connect_timeout=5
+
   # redis:
   #   image: "redis:alpine"
   #   ports:
